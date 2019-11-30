@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Convolutions with cuDNN &#8211; Peter Goldsborough</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Implementing computer vision's most crucial operation with NVIDIA's cuDNN library">
+    <meta name="author" content="Peter Goldsborough">
+    <meta name="keywords" content="cuda, ml, cudnn, c++">
+    <link rel="canonical" href="http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/">
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for Peter Goldsborough" href="/feed.xml" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css?201909140909" type="text/css">
+
+    <!-- Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:900,300" rel="stylesheet" type="text/css">
+    
+      <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    
+
+    <!-- Verifications -->
+    
+
+    <!-- Open Graph -->
+    <!-- From: https://github.com/mmistakes/hpstr-jekyll-theme/blob/master/_includes/head.html -->
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Convolutions with cuDNN">
+    <meta property="og:description" content="A blog on computer science, artificial intelligence and the excitement of life.">
+    <meta property="og:url" content="http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/">
+    <meta property="og:site_name" content="Peter Goldsborough">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    
+        <meta name="twitter:site" content="@pegoldsborough" />
+    
+    <meta name="twitter:title" content="Convolutions with cuDNN" />
+    <meta name="twitter:description" content="Implementing computer vision's most crucial operation with NVIDIA's cuDNN library" />
+    <meta name="twitter:url" content="http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/" />
+
+    <!-- Icons -->
+     <link rel="icon" type="image/png" href="/images/favicon/favicon-192x192.png" sizes="192x192">
+		 <link rel="icon" type="image/png" href="/images/favicon/favicon-160x160.png" sizes="160x160">
+		 <link rel="icon" type="image/png" href="/images/favicon/favicon-96x96.png" sizes="96x96">
+		 <link rel="icon" type="image/png" href="/images/favicon/favicon-16x16.png" sizes="16x16">
+		 <link rel="icon" type="image/png" href="/images/favicon/favicon-32x32.png" sizes="32x32">
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(["_setAccount", "UA-75082316-1"]);
+      _gaq.push(["_trackPageview"]);
+      (function() {
+        var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
+        ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+        var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+
+    
+		<script type="text/x-mathjax-config">
+			MathJax.Hub.Config({
+				jax: ["input/TeX", "output/HTML-CSS"],
+				tex2jax: {
+					inlineMath: [["$", "$"], ["\\(","\\)"]],
+					displayMath: [["$$", "$$"], ["\\[","\\]"]],
+					processEscapes: true,
+					skipTags: [
+						"script",
+						"noscript",
+						"style",
+						"textarea",
+						"pre",
+						"code"
+					]
+			},
+			messageStyle: "none",
+			"HTML-CSS": {
+			  preferredFont: "STIX",
+			  availableFonts: ["STIX", "TeX"]
+			  }
+			});
+		</script>
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+</head>
+
+<body class="site animated fade-in-down">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+  <div class="mt2 wrap">
+    <div class="measure">
+      <a href="/" class="site-title">Peter Goldsborough</a>
+      <nav class="site-nav">
+        <a href="/about/">About</a>
+<a href="/contact/">Contact</a>
+<a href="/cv/">CV</a>
+
+      </nav>
+  </div>
+</header>
+
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        
+
+
+<div class="post-header mb2">
+  <h1>Convolutions with cuDNN</h1>
+  <span class="post-meta">Oct 1, 2017</span>
+  
+  <span class="post-meta-small">
+  
+	12 minute read
+  
+  </span>
+</div>
+
+<article class="post-content">
+  <p>Convolutions are one of the most fundamental building blocks of many modern
+computer vision model architectures, from classification models like
+<a href="https://arxiv.org/abs/1409.1556">VGGNet</a>, to Generative Adversarial Networks
+like <a href="https://arxiv.org/abs/1606.03657">InfoGAN</a> to object detection
+architectures like <a href="https://arxiv.org/abs/1703.06870">Mask R-CNN</a> and many more.
+While these and other deep learning models have shown to perform exceptionally
+well in their particular task, they also take notoriously long to train on
+conventional hardware (CPUs). To fit training within reasonable time frames,
+you’ll probably need access to at least one GPU. Luckily, most popular deep
+learning libraries have support for GPUs. If that is the case, you’ll often find
+that the core convolution primitives are not implemented by those frameworks
+themselves, but outsourced to one particular library: <em>cuDNN</em>.</p>
+
+<p><a href="https://developer.nvidia.com/cudnn">CuDNN</a> is a closed-source low-level library
+for deep learning <em>primitives</em> developed by NVIDIA. These <em>primitives</em> include
+operations like convolutions, activation functions like sigmoids or rectified
+linear units as well as pooling operations. All of the major deep learning
+frameworks like TensorFlow, Caffe2 or MXNet base many of their GPU kernels on
+cuDNN. In this post, I’ll walk you through the implementation of a basic
+convolution operation with cuDNN. Given that the library is very low-level, this
+is quite a lot more work than you’d expect.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>To execute the code I’ll discuss in this post, you will need access to an NVIDIA
+GPU. If you don’t have one yet, I recommend grabbing a <a href="https://www.nvidia.com/en-us/geforce/products/10series/titan-x-pascal/">Titan
+X</a> if
+you have a spare wad of cash lying around, or a cute little <a href="http://www.nvidia.com/object/embedded-systems-dev-kits-modules.html">Jetson
+TX2</a> which
+you can get for \$300 if you’re a student and for around $600 otherwise.
+Whatever your device, it will require a <a href="https://en.wikipedia.org/wiki/CUDA#GPUs_supported">compute
+capability</a> of at least 3.0
+to run cuDNN kernels. You’ll also need the cuDNN library, which you can download
+<a href="https://developer.nvidia.com/cudnn">here</a>.</p>
+
+<h2 id="basic-overview">Basic Overview</h2>
+
+<p>CuDNN is a CUDA library that abstracts various high performance deep learning
+kernels, such as convolutions or activations. The basic programming model
+consists of describing the operands to the kernels, including their shape and
+memory layout; describing the algorithms we want to perform; allocating memory
+for cuDNN to operate on (a <em>workspace</em>) and finally executing the actual
+operations. Even though the bulk of the work is hidden behind functions, we’ll
+still need to perform one or the other <code class="highlighter-rouge">cudaMalloc</code>, <code class="highlighter-rouge">cudaMemcpy</code> and other
+low-level CUDA operations ourselves.</p>
+
+<h2 id="walkthrough">Walkthrough</h2>
+
+<p>The basics out of the way, let me now walk you through the code for a basic
+cuDNN convolution operation. We begin by including the necessary header and
+creating an object of <code class="highlighter-rouge">cudnnHandle_t</code> type, which will serve as a sort of
+<em>context</em> object, connecting the various operations we need to piece together
+for our convolution kernel:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;cudnn.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="k">const</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+  <span class="n">cudnnHandle_t</span> <span class="n">cudnn</span><span class="p">;</span>
+  <span class="n">cudnnCreate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cudnn</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>One thing to note is that <code class="highlighter-rouge">cudnnCreate</code>, like <em>all other</em> cuDNN routines,
+returns an error code of <code class="highlighter-rouge">cudnnStatus_t</code> type. As such, it makes sense to define
+a macro that checks this status object for any error condition and aborts the
+execution of our program if something went wrong. We can then simply wrap any
+library function we call with that macro:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define checkCUDNN(expression)                               \
+  {                                                          \
+    cudnnStatus_t status = (expression);                     \
+    if (status != CUDNN_STATUS_SUCCESS) {                    \
+      std::cerr &lt;&lt; "Error on line " &lt;&lt; __LINE__ &lt;&lt; ": "      \
+                &lt;&lt; cudnnGetErrorString(status) &lt;&lt; std::endl; \
+      std::exit(EXIT_FAILURE);                               \
+    }                                                        \
+  }
+</span></code></pre></div></div>
+
+<p>leaving us with</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnCreate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cudnn</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>For the remainder of the tutorial, I will assume we’re dealing with a single
+<code class="highlighter-rouge">image</code> object loaded using OpenCV. You can use this function to load such an
+object:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;opencv2/opencv.hpp&gt;
+</span>
+<span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">load_image</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">image_path</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">image</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">imread</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">CV_LOAD_IMAGE_COLOR</span><span class="p">);</span>
+  <span class="n">image</span><span class="p">.</span><span class="n">convertTo</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">CV_32FC3</span><span class="p">);</span>
+  <span class="n">cv</span><span class="o">::</span><span class="n">normalize</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">NORM_MINMAX</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">image</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">image</span> <span class="o">=</span> <span class="n">load_image</span><span class="p">(</span><span class="s">"/path/to/image.png"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="-describing-operands"># Describing Operands</h2>
+
+<p>Next, we need to describe the three data structures that participate in the
+convolution operation: the <em>input</em> tensor, the <em>output</em> tensor and the <em>kernel</em>
+tensor. CuDNN provides quite a lot of flexibility for to the description of
+tensors. This is particularly important when it comes to the memory layout,
+which can be either <code class="highlighter-rouge">NHWC</code> or <code class="highlighter-rouge">NCHW</code>. In either of these two formats, <code class="highlighter-rouge">N</code>
+specifies the <em>batch dimension</em>. CuDNN generally allows its operations to be
+performed on batches of data (often images), so the first dimension would be for
+individual images. <code class="highlighter-rouge">H</code> and <code class="highlighter-rouge">W</code> stand for the <em>height</em> and <em>width</em> dimension.
+Lastly, <code class="highlighter-rouge">C</code> is the <em>channels</em> axis, e.g. for red, green and blue (RGB) channels
+of a color image. Some deep learning frameworks, like TensorFlow, prefer to
+store tensors in NHWC format (where channels change most frequently), while
+others prefer putting channels first. CuDNN provides easy integration for both
+layouts (this sort of flexibility is one of its core selling points). Let’s take
+a look how to describe the input tensor, which will later on store the image we
+want to convolve:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cudnnTensorDescriptor_t</span> <span class="n">input_descriptor</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnCreateTensorDescriptor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">input_descriptor</span><span class="p">));</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnSetTensor4dDescriptor</span><span class="p">(</span><span class="n">input_descriptor</span><span class="p">,</span>
+                                      <span class="cm">/*format=*/</span><span class="n">CUDNN_TENSOR_NHWC</span><span class="p">,</span>
+                                      <span class="cm">/*dataType=*/</span><span class="n">CUDNN_DATA_FLOAT</span><span class="p">,</span>
+                                      <span class="cm">/*batch_size=*/</span><span class="mi">1</span><span class="p">,</span>
+                                      <span class="cm">/*channels=*/</span><span class="mi">3</span><span class="p">,</span>
+                                      <span class="cm">/*image_height=*/</span><span class="n">image</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span>
+                                      <span class="cm">/*image_width=*/</span><span class="n">image</span><span class="p">.</span><span class="n">cols</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>The first thing we need to do is declare and initialize a
+<code class="highlighter-rouge">cudnnTensorDescriptor_t</code>. Then, we use <code class="highlighter-rouge">cudnnSetTensor4dDescriptor</code> to actually
+specify the properties of the tensor. For this tensor, we set the format to be
+<code class="highlighter-rouge">NHWC</code>. The remainder of the options tell cuDNN that we’ll be convolving a
+single image with three (color) channels, whose pixels are represented as
+floating point values (between 0 and 1). We also configure the height and width of
+the tensor. We do the same for the output image:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cudnnTensorDescriptor_t</span> <span class="n">output_descriptor</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnCreateTensorDescriptor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">output_descriptor</span><span class="p">));</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnSetTensor4dDescriptor</span><span class="p">(</span><span class="n">output_descriptor</span><span class="p">,</span>
+                                      <span class="cm">/*format=*/</span><span class="n">CUDNN_TENSOR_NHWC</span><span class="p">,</span>
+                                      <span class="cm">/*dataType=*/</span><span class="n">CUDNN_DATA_FLOAT</span><span class="p">,</span>
+                                      <span class="cm">/*batch_size=*/</span><span class="mi">1</span><span class="p">,</span>
+                                      <span class="cm">/*channels=*/</span><span class="mi">3</span><span class="p">,</span>
+                                      <span class="cm">/*image_height=*/</span><span class="n">image</span><span class="p">.</span><span class="n">rows</span><span class="p">,</span>
+                                      <span class="cm">/*image_width=*/</span><span class="n">image</span><span class="p">.</span><span class="n">cols</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Leaving us with the kernel tensor. CuDNN has specialized construction and
+initialization routines for kernels (filters):</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cudnnFilterDescriptor_t</span> <span class="n">kernel_descriptor</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnCreateFilterDescriptor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">kernel_descriptor</span><span class="p">));</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnSetFilter4dDescriptor</span><span class="p">(</span><span class="n">kernel_descriptor</span><span class="p">,</span>
+                                      <span class="cm">/*dataType=*/</span><span class="n">CUDNN_DATA_FLOAT</span><span class="p">,</span>
+                                      <span class="cm">/*format=*/</span><span class="n">CUDNN_TENSOR_NCHW</span><span class="p">,</span>
+                                      <span class="cm">/*out_channels=*/</span><span class="mi">3</span><span class="p">,</span>
+                                      <span class="cm">/*in_channels=*/</span><span class="mi">3</span><span class="p">,</span>
+                                      <span class="cm">/*kernel_height=*/</span><span class="mi">3</span><span class="p">,</span>
+                                      <span class="cm">/*kernel_width=*/</span><span class="mi">3</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>The parameters are essentially the same, since <a href="http://cs231n.github.io/assets/cnn/weights.jpeg">kernels are small images
+themselves</a>. The only
+difference is that the <code class="highlighter-rouge">batch_size</code> is now the number of output channels
+(<code class="highlighter-rouge">out_channels</code>) or feature maps. Note, however, that I’ve switched the format
+argument to <code class="highlighter-rouge">NCHW</code>. This will make it easier to define the kernel weights later
+on.</p>
+
+<h2 id="-describing-the-convolution-kernel"># Describing the Convolution Kernel</h2>
+
+<p>With the parameter description out of the way, we now need to tell cuDNN what
+kind of (convolution) operation we want to perform. For this, we again declare
+and configure a <em>descriptor</em>, which, you may notice, is an overarching pattern
+in cuDNN code:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cudnnConvolutionDescriptor_t</span> <span class="n">convolution_descriptor</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnCreateConvolutionDescriptor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">convolution_descriptor</span><span class="p">));</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnSetConvolution2dDescriptor</span><span class="p">(</span><span class="n">convolution_descriptor</span><span class="p">,</span>
+                                           <span class="cm">/*pad_height=*/</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="cm">/*pad_width=*/</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="cm">/*vertical_stride=*/</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="cm">/*horizontal_stride=*/</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="cm">/*dilation_height=*/</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="cm">/*dilation_width=*/</span><span class="mi">1</span><span class="p">,</span>
+                                           <span class="cm">/*mode=*/</span><span class="n">CUDNN_CROSS_CORRELATION</span><span class="p">,</span>
+                                           <span class="cm">/*computeType=*/</span><span class="n">CUDNN_DATA_FLOAT</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>If you’re unfamiliar with the common hyperparameters (read: knobs) of
+convolutions, you can find out more about them
+<a href="http://cs231n.github.io/convolutional-networks/">here</a>. If you’re a pro at
+convolutions, you’ll understand that the first two parameters to
+<code class="highlighter-rouge">cudnnSetConvolution2dDescriptor</code> after the descriptor control the zero-padding
+around the image, the subsequent two control the kernel stride and the next two
+the dilation. The <code class="highlighter-rouge">mode</code> argument can be either <code class="highlighter-rouge">CUDNN_CONVOLUTION</code> or
+<code class="highlighter-rouge">CUDNN_CROSS_CORRELATION</code>. These are basically the two ways we can compute the
+weighted sum that makes up a single convolution pass – for our purposes (and
+convolutions in CNNs as we know them) we want <code class="highlighter-rouge">CUDNN_CROSS_CORRELATION</code>. The
+last argument is the data type we’re operating on.</p>
+
+<p>Ok, are we finally done? Why is this so much code compared to <code class="highlighter-rouge">tf.nn.conv2d</code>?
+Well, the answers are (1) no and (2) because we’re many layers beneath the level
+of abstraction we usually enjoy working with. We need two more things: a more
+detailed description of the convolution algorithm we want to use and the
+physical memory to operate on. Let’s begin with the first:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cudnnConvolutionFwdAlgo_t</span> <span class="n">convolution_algorithm</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span>
+    <span class="n">cudnnGetConvolutionForwardAlgorithm</span><span class="p">(</span><span class="n">cudnn</span><span class="p">,</span>
+                                        <span class="n">input_descriptor</span><span class="p">,</span>
+                                        <span class="n">kernel_descriptor</span><span class="p">,</span>
+                                        <span class="n">convolution_descriptor</span><span class="p">,</span>
+                                        <span class="n">output_descriptor</span><span class="p">,</span>
+                                        <span class="n">CUDNN_CONVOLUTION_FWD_PREFER_FASTEST</span><span class="p">,</span>
+                                        <span class="cm">/*memoryLimitInBytes=*/</span><span class="mi">0</span><span class="p">,</span>
+                                        <span class="o">&amp;</span><span class="n">convolution_algorithm</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Here, we pass the descriptors we previously defined, as well as two further very
+important arguments: a <em>preference</em> for the kind of algorithm we want cuDNN to
+use for the convolution as well as an upper bound on the amount of memory
+available for the convolution. The latter we can set to zero, if we don’t have a
+limit. The former can be one of a few choices. Above, I specify
+<code class="highlighter-rouge">CUDNN_CONVOLUTION_FWD_PREFER_FASTEST</code>, which tells cuDNN to use the fastest
+algorithm available. In memory constrained environments, we may instead prefer
+<code class="highlighter-rouge">CUDNN_CONVOLUTION_FWD_SPECIFY_​WORKSPACE_LIMIT</code> and then specify a non-zero
+value for the memory limit. After the call to
+<code class="highlighter-rouge">cudnnGetConvolutionForwardAlgorithm</code> returns, <code class="highlighter-rouge">convolution_algorithm</code> will
+contain the actual algorithm cuDNN has decided to use, for example</p>
+
+<ul>
+  <li><code class="highlighter-rouge">CUDNN_CONVOLUTION_FWD_ALGO_GEMM</code>, which models the convolution as an explicit matrix multiplication,</li>
+  <li><code class="highlighter-rouge">CUDNN_CONVOLUTION_FWD_ALGO_FFT</code>, which uses a Fast Fourier Transform (FFT) for the convolution or</li>
+  <li><code class="highlighter-rouge">CUDNN_CONVOLUTION_FWD_ALGO_WINOGRAD</code>, which employs the Winograd algorithm to perform the convolution.</li>
+</ul>
+
+<p>You can have a look at <a href="https://arxiv.org/pdf/1509.09308.pdf">this paper</a> if
+you’re interested in different algorithms and implementations for convolutions.</p>
+
+<p>Next, we ask cuDNN how much memory it needs for its operation:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">size_t</span> <span class="n">workspace_bytes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnGetConvolutionForwardWorkspaceSize</span><span class="p">(</span><span class="n">cudnn</span><span class="p">,</span>
+                                                   <span class="n">input_descriptor</span><span class="p">,</span>
+                                                   <span class="n">kernel_descriptor</span><span class="p">,</span>
+                                                   <span class="n">convolution_descriptor</span><span class="p">,</span>
+                                                   <span class="n">output_descriptor</span><span class="p">,</span>
+                                                   <span class="n">convolution_algorithm</span><span class="p">,</span>
+                                                   <span class="o">&amp;</span><span class="n">workspace_bytes</span><span class="p">));</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">"Workspace size: "</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">workspace_bytes</span> <span class="o">/</span> <span class="mf">1048576.0</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">"MB"</span>
+          <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="-allocating-memory"># Allocating Memory</h2>
+
+<p>At this point, we need to allocate the required resources for the convolution.
+The number of buffers and memory requirements for each buffer will differ
+depending on which algorithm we use for the convolution.  In our case, we need
+four buffers for the workspace, the input and output image as well as the
+kernel. Let’s allocate the first three on the device directly:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span><span class="o">*</span> <span class="n">d_workspace</span><span class="p">{</span><span class="nb">nullptr</span><span class="p">};</span>
+<span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_workspace</span><span class="p">,</span> <span class="n">workspace_bytes</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="n">image_bytes</span> <span class="o">=</span> <span class="n">batch_size</span> <span class="o">*</span> <span class="n">channels</span> <span class="o">*</span> <span class="n">height</span> <span class="o">*</span> <span class="n">width</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">);</span>
+
+<span class="kt">float</span><span class="o">*</span> <span class="n">d_input</span><span class="p">{</span><span class="nb">nullptr</span><span class="p">};</span>
+<span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_input</span><span class="p">,</span> <span class="n">image_bytes</span><span class="p">);</span>
+<span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_input</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">ptr</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">image_bytes</span><span class="p">,</span> <span class="n">cudaMemcpyHostToDevice</span><span class="p">);</span>
+
+<span class="kt">float</span><span class="o">*</span> <span class="n">d_output</span><span class="p">{</span><span class="nb">nullptr</span><span class="p">};</span>
+<span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_output</span><span class="p">,</span> <span class="n">image_bytes</span><span class="p">);</span>
+<span class="n">cudaMemset</span><span class="p">(</span><span class="n">d_output</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image_bytes</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Note that I got the <code class="highlighter-rouge">batch_size</code>, <code class="highlighter-rouge">channels</code>, <code class="highlighter-rouge">height</code> and <code class="highlighter-rouge">width</code> variables
+from the <code class="highlighter-rouge">cudnnGetConvolution2dForwardOutputDim</code> function, which tells you the
+dimension of the image after the convolution. I omit it here because it’s
+already a lot of code and the output dimensions are identical to the input
+anyway. The kernel we’ll want to first allocate and populate on the host and
+then copy to the GPU device:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Mystery kernel
+</span><span class="k">const</span> <span class="kt">float</span> <span class="n">kernel_template</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">{</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span>
+  <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">},</span>
+  <span class="p">{</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">float</span> <span class="n">h_kernel</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">][</span><span class="mi">3</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">kernel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">kernel</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">++</span><span class="n">kernel</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">channel</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">channel</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">++</span><span class="n">channel</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">++</span><span class="n">row</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">column</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">column</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">++</span><span class="n">column</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">h_kernel</span><span class="p">[</span><span class="n">kernel</span><span class="p">][</span><span class="n">channel</span><span class="p">][</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_template</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">column</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">float</span><span class="o">*</span> <span class="n">d_kernel</span><span class="p">{</span><span class="nb">nullptr</span><span class="p">};</span>
+<span class="n">cudaMalloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">d_kernel</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">h_kernel</span><span class="p">));</span>
+<span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">d_kernel</span><span class="p">,</span> <span class="n">h_kernel</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">h_kernel</span><span class="p">),</span> <span class="n">cudaMemcpyHostToDevice</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Note how I first declare a “template” for the 3 by 3 kernel use and then copy it
+into the three input and three output dimensions of the actual kernel buffer.
+That is, we’ll have the same pattern three times, once for each channel of the
+input image (red, green and blue), and that whole kernel three times, once for
+each output feature map we want to produce.</p>
+
+<p>Can you guess what that kernel does? Read on to find out!</p>
+
+<h2 id="-the-convolution-finally"># The Convolution (finally)</h2>
+
+<p>At last, we can perform the actual convolution operation:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">const</span> <span class="kt">float</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnConvolutionForward</span><span class="p">(</span><span class="n">cudnn</span><span class="p">,</span>
+                                   <span class="o">&amp;</span><span class="n">alpha</span><span class="p">,</span>
+                                   <span class="n">input_descriptor</span><span class="p">,</span>
+                                   <span class="n">d_input</span><span class="p">,</span>
+                                   <span class="n">kernel_descriptor</span><span class="p">,</span>
+                                   <span class="n">d_kernel</span><span class="p">,</span>
+                                   <span class="n">convolution_descriptor</span><span class="p">,</span>
+                                   <span class="n">convolution_algorithm</span><span class="p">,</span>
+                                   <span class="n">d_workspace</span><span class="p">,</span>
+                                   <span class="n">workspace_bytes</span><span class="p">,</span>
+                                   <span class="o">&amp;</span><span class="n">beta</span><span class="p">,</span>
+                                   <span class="n">output_descriptor</span><span class="p">,</span>
+                                   <span class="n">d_output</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>Here, <code class="highlighter-rouge">alpha</code> and <code class="highlighter-rouge">beta</code> are parameters that can be used to mix the input and
+output buffers (they’re not really useful for us). The rest of the parameters
+are basically everything we declared and configured up to this point. Note that
+the <code class="highlighter-rouge">d_workspace</code> is allowed to be <code class="highlighter-rouge">nullptr</code> if we pick a convolution algorithm
+that does not require additional memory.</p>
+
+<p>The only thing left to do at this point is copy the resulting image back to the host and do something with it. We also need to release any resources we allocated, of course:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">float</span><span class="o">*</span> <span class="n">h_output</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">float</span><span class="p">[</span><span class="n">image_bytes</span><span class="p">];</span>
+<span class="n">cudaMemcpy</span><span class="p">(</span><span class="n">h_output</span><span class="p">,</span> <span class="n">d_output</span><span class="p">,</span> <span class="n">image_bytes</span><span class="p">,</span> <span class="n">cudaMemcpyDeviceToHost</span><span class="p">);</span>
+
+<span class="c1">// Do something with h_output ...
+</span>
+<span class="k">delete</span><span class="p">[]</span> <span class="n">h_output</span><span class="p">;</span>
+<span class="n">cudaFree</span><span class="p">(</span><span class="n">d_kernel</span><span class="p">);</span>
+<span class="n">cudaFree</span><span class="p">(</span><span class="n">d_input</span><span class="p">);</span>
+<span class="n">cudaFree</span><span class="p">(</span><span class="n">d_output</span><span class="p">);</span>
+<span class="n">cudaFree</span><span class="p">(</span><span class="n">d_workspace</span><span class="p">);</span>
+
+<span class="n">cudnnDestroyTensorDescriptor</span><span class="p">(</span><span class="n">input_descriptor</span><span class="p">);</span>
+<span class="n">cudnnDestroyTensorDescriptor</span><span class="p">(</span><span class="n">output_descriptor</span><span class="p">);</span>
+<span class="n">cudnnDestroyFilterDescriptor</span><span class="p">(</span><span class="n">kernel_descriptor</span><span class="p">);</span>
+<span class="n">cudnnDestroyConvolutionDescriptor</span><span class="p">(</span><span class="n">convolution_descriptor</span><span class="p">);</span>
+
+<span class="n">cudnnDestroy</span><span class="p">(</span><span class="n">cudnn</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Here is a function you can use to save the image:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">save_image</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">output_filename</span><span class="p">,</span>
+                <span class="kt">float</span><span class="o">*</span> <span class="n">buffer</span><span class="p">,</span>
+                <span class="kt">int</span> <span class="n">height</span><span class="p">,</span>
+                <span class="kt">int</span> <span class="n">width</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">output_image</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">CV_32FC3</span><span class="p">,</span> <span class="n">buffer</span><span class="p">);</span>
+  <span class="c1">// Make negative values zero.
+</span>  <span class="n">cv</span><span class="o">::</span><span class="n">threshold</span><span class="p">(</span><span class="n">output_image</span><span class="p">,</span>
+                <span class="n">output_image</span><span class="p">,</span>
+                <span class="cm">/*threshold=*/</span><span class="mi">0</span><span class="p">,</span>
+                <span class="cm">/*maxval=*/</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">cv</span><span class="o">::</span><span class="n">THRESH_TOZERO</span><span class="p">);</span>
+  <span class="n">cv</span><span class="o">::</span><span class="n">normalize</span><span class="p">(</span><span class="n">output_image</span><span class="p">,</span> <span class="n">output_image</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">255.0</span><span class="p">,</span> <span class="n">cv</span><span class="o">::</span><span class="n">NORM_MINMAX</span><span class="p">);</span>
+  <span class="n">output_image</span><span class="p">.</span><span class="n">convertTo</span><span class="p">(</span><span class="n">output_image</span><span class="p">,</span> <span class="n">CV_8UC3</span><span class="p">);</span>
+  <span class="n">cv</span><span class="o">::</span><span class="n">imwrite</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">output_image</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ...
+</span>
+<span class="n">save_image</span><span class="p">(</span><span class="s">"cudnn-out.png"</span><span class="p">,</span> <span class="n">h_output</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="-running-the-code"># Running the Code</h2>
+
+<p>Nearly 200 lines later, we have our basic convolution operation in place. So let’s try it out! You can compile this code using a Makefile like this:</p>
+
+<div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">CXX</span> <span class="o">:=</span> nvcc
+<span class="nv">TARGET</span> <span class="o">:=</span> conv
+<span class="nv">CUDNN_PATH</span> <span class="o">:=</span> cudnn
+<span class="nv">HEADERS</span> <span class="o">:=</span> <span class="nt">-I</span> <span class="nv">$(CUDNN_PATH)</span>/include
+<span class="nv">LIBS</span> <span class="o">:=</span> <span class="nt">-L</span> <span class="nv">$(CUDNN_PATH)</span>/lib64 <span class="nt">-L</span>/usr/local/lib
+<span class="nv">CXXFLAGS</span> <span class="o">:=</span> <span class="nt">-arch</span><span class="o">=</span>sm_35 <span class="nt">-std</span><span class="o">=</span>c++11 <span class="nt">-O2</span>
+
+<span class="nl">all</span><span class="o">:</span> <span class="nf">conv</span>
+
+<span class="nl">conv</span><span class="o">:</span> <span class="nf">$(TARGET).cu</span>
+	<span class="nv">$(CXX)</span> <span class="nv">$(CXXFLAGS)</span> <span class="nv">$(HEADERS)</span> <span class="nv">$(LIBS)</span> <span class="nv">$(TARGET)</span>.cu <span class="nt">-o</span> <span class="nv">$(TARGET)</span> <span class="se">\</span>
+	<span class="nt">-lcudnn</span> <span class="nt">-lopencv_imgcodecs</span> <span class="nt">-lopencv_imgproc</span> <span class="nt">-lopencv_core</span>
+
+<span class="nl">.phony</span><span class="o">:</span> <span class="nf">clean</span>
+
+<span class="nl">clean</span><span class="o">:</span>
+	rm <span class="nv">$(TARGET)</span> <span class="o">||</span> <span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">""</span>
+</code></pre></div></div>
+
+<p>Where I’m also linking in OpenCV to load and store the image we’re convolving.
+You should set <code class="highlighter-rouge">CUDNN_PATH</code> to your CUDNN installation directory to <code class="highlighter-rouge">make</code>
+successfully. Once built, you could, for example, convolve the TensorFlow logo:</p>
+
+<p><img src="/images/cudnn/tensorflow.png" alt="tf logo" /></p>
+
+<p>to get …</p>
+
+<p><img src="/images/cudnn/cudnn-out.png" alt="convolved tf logo" /></p>
+
+<p>a convolved TensorFlow logo. Hooray! As you can see, the kernel I used in this
+example is a basic edge detector.</p>
+
+<h2 id="bonus-sigmoid-activation">Bonus: Sigmoid Activation</h2>
+
+<p>I mentioned that besides convolutions, cuDNN also has efficient implementations
+of activation functions (both forward and backward passes). Here is an example
+of how you’d add a sigmoid pass to the convolution code so far:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Describe the activation
+</span><span class="n">cudnnActivationDescriptor_t</span> <span class="n">activation_descriptor</span><span class="p">;</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnCreateActivationDescriptor</span><span class="p">(</span><span class="o">&amp;</span><span class="n">activation_descriptor</span><span class="p">));</span>
+<span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnSetActivationDescriptor</span><span class="p">(</span><span class="n">activation_descriptor</span><span class="p">,</span>
+                                        <span class="cm">/*mode=*/</span><span class="n">CUDNN_ACTIVATION_SIGMOID</span><span class="p">,</span>
+                                        <span class="cm">/*reluNanOpt=*/</span><span class="n">CUDNN_PROPAGATE_NAN</span><span class="p">,</span>
+                                        <span class="cm">/*relu_coef=*/</span><span class="mi">0</span><span class="p">));</span>
+
+<span class="c1">// Perform the forward pass of the activation
+</span><span class="n">checkCUDNN</span><span class="p">(</span><span class="n">cudnnActivationForward</span><span class="p">(</span><span class="n">cudnn</span><span class="p">,</span>
+                                  <span class="n">activation_descriptor</span><span class="p">,</span>
+                                  <span class="o">&amp;</span><span class="n">alpha</span><span class="p">,</span>
+                                  <span class="n">output_descriptor</span><span class="p">,</span>
+                                  <span class="n">d_output</span><span class="p">,</span>
+                                  <span class="o">&amp;</span><span class="n">beta</span><span class="p">,</span>
+                                  <span class="n">output_descriptor</span><span class="p">,</span>
+                                  <span class="n">d_output</span><span class="p">));</span>
+
+<span class="c1">// Release resources
+</span><span class="n">cudnnDestroyActivationDescriptor</span><span class="p">(</span><span class="n">activation_descriptor</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Done!</p>
+
+<h2 id="outro">Outro</h2>
+
+<p>In this post I outlined the minimal steps required to perform a convolution with
+cuDNN, NVIDIA’s high performance library for neural network primitives. The one
+thing you should notice is how much effort it was to get a basic convolution
+working. This might indeed seem bad, but remember that cuDNN is not intended to
+be a high-level, user-facing library. It is intended to be a building block for
+deep learning frameworks like Caffe2 or TensorFlow, who then add a nice API on
+top of it, often even in a higher-level language like Python or Lua.
+Nevertheless, you may be one of the lucky people who gets to hack on deep
+learning framework backends. In that case, I hope this post was useful to get an
+idea how to perform a basic convolution with cuDNN. You can find the complete
+code in this Gist
+<a href="https://gist.github.com/goldsborough/865e6717e64fbae75cdaf6c9914a130d">here</a>.</p>
+
+</article>
+
+<div class="post-footer">
+  
+	<div class="post-footer">
+	
+	<div class="post-footer-left share-links">
+		<ul>
+		
+			<li>
+				<a class="fa fa-tumblr" href="http://www.tumblr.com/share/link?url=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/&name=Convolutions with cuDNN" rel="nofollow" target="_blank" title="Share on Tumblr"></a>
+			</li>
+		
+
+		
+			<li>
+				<a class="fa fa-reddit" href="http://reddit.com/submit?url=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/&title=Convolutions with cuDNN" rel="nofollow" target="_blank" title="Share on Reddit"></a>
+			</li>
+		
+
+		
+			<li>
+				<a class="fa fa-stumbleupon" href="http://www.stumbleupon.com/submit?url=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/&title=Convolutions with cuDNN" rel="nofollow" target="_blank" title="Share on StumbleUpon"></a>
+			</li>
+		
+
+		
+		  <li>
+				<a class = "fa fa-hacker-news" onclick="parent.postMessage('submit','*')" href="https://news.ycombinator.com/submitlink?u=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/&t=Convolutions with cuDNN" rel="nofollow" target="_blank" title="Share on Hacker News"></a>
+			</li>
+		
+		</ul>
+	</div>
+	
+
+	<div class="py2 post-footer-center">
+	 	<img src="/images/me.jpg" alt="Peter Goldsborough" class="avatar" />
+		<p> Fix the World</p>
+	</div>
+
+	
+	<div class="post-footer-right share-links">
+		<ul>
+			
+				<li>
+					<a class = "fa fa-facebook" href="https://facebook.com/sharer.php?u=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/" rel="nofollow" target="_blank" title="Share on Facebook"></a>
+				</li>
+			
+
+			
+				<li>
+					<a class="fa fa-twitter" href="https://twitter.com/intent/tweet?text=Convolutions with cuDNN&url=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/" rel="nofollow" target="_blank" title="Share on Twitter"></a>
+				</li>
+			
+
+			
+				<li>
+					<a class="fa fa-google-plus" href="https://plus.google.com/share?url=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/" rel="nofollow" target="_blank" title="Share on Google+"></a>
+				</li>
+			
+
+			
+				<li>
+					<a class="fa fa-linkedin" href="http://www.linkedin.com/shareArticle?url=http://www.goldsborough.me/cuda/ml/cudnn/c++/2017/10/01/14-37-23-convolutions_with_cudnn/&title=Convolutions with cuDNN" rel="nofollow" target="_blank" title="Share on LinkedIn"></a>
+				</li>
+			
+
+			
+		</ul>
+	</div>
+	
+	<script type="text/javascript">
+		var containers = document.getElementsByClassName("share-links")
+		var variants = ["A", "B"]
+		for (var c = 0; c < containers.length; ++c)
+		{
+			var links = containers[c].getElementsByTagName("li")
+			for (var i = 0; i < links.length; ++i)
+			{
+				var variant = " share-links-" + variants[(c + i) % 2]
+				links[i].getElementsByTagName("a")[0].className += variant
+			}
+		}
+	</script>
+</div>
+
+  
+</div>
+
+
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES * * */
+	var disqus_shortname = 'goldsborough';
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+  <div class="related-posts">
+    <h3 class="related-post-title">Related Posts</h3>
+    
+  	<div class="post ml2">
+  	  <a href="/stream-processing/batch-processing/distributed-systems/2019/09/14/02-01-58-a_look_at_naiad/" class="post-link">
+  		<h4 class="post-title">A Look at Naiad</h4>
+  		<p class="post-summary">Unifying batch and streaming through timely dataflow</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/distributed-systems/2019/05/18/21-09-00-a_look_at_dremel/" class="post-link">
+  		<h4 class="post-title">A Look at Dremel</h4>
+  		<p class="post-summary">An Overview of "Dremel&#58; Interactive Analysis of Web-Scale Datasets" (2010)</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/distributed-systems/2019/04/09/21-16-52-a_look_at_mesos/" class="post-link">
+  		<h4 class="post-title">A Look at Mesos</h4>
+  		<p class="post-summary">An introduction to the Mesos cluster management framework</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/life/productivity/habits/2019/02/10/15-56-10-use_disruptive_moments_in_life_to_pick_up_new_habits/" class="post-link">
+  		<h4 class="post-title">Use Disruptive Moments in Life to Pick Up New Habits</h4>
+  		<p class="post-summary">Times of upheaval in your life are the best time to slide in a new routine.</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/swift/ios/app/ml/2018/12/10/20-49-02-using_the_google_cloud_vision_api_for_ocr_in_swift/" class="post-link">
+  		<h4 class="post-title">Using the Google Cloud Vision API for OCR in Swift</h4>
+  		<p class="post-summary">A showcase of interacting with the Google Cloud Vision API to recognize text in the wild from within a Swift iOS application</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/cpp/2018/05/22/00-32-43-type_erasure_for_unopinionated_interfaces_in_c++/" class="post-link">
+  		<h4 class="post-title">Type Erasure for Unopinionated Interfaces in C++</h4>
+  		<p class="post-summary">Taking the ideas of std::any one step further to achieve highly flexible polymorphism</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/ml/ai/python/2018/02/04/20-17-20-a_promenade_of_pytorch/" class="post-link">
+  		<h4 class="post-title">A Promenade of PyTorch</h4>
+  		<p class="post-summary">A brief discussion of a research-first deep learning framework</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/rust/web/tutorial/2018/01/20/17-01-11-writing_a_microservice_in_rust/" class="post-link">
+  		<h4 class="post-title">Writing a Microservice in Rust</h4>
+  		<p class="post-summary">An investigation into using Rust to write a small web service</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/c++/python/cuda/2017/09/10/20-32-46-exploring_k-means_in_python,_c++_and_cuda/" class="post-link">
+  		<h4 class="post-title">Exploring K-Means in Python, C++ and CUDA</h4>
+  		<p class="post-summary">Implementations of K-Means in three different environments</p>
+  	  </a>
+  	</div>
+    
+  	<div class="post ml2">
+  	  <a href="/internship/facebook/2017/08/13/23-31-54-my_facebook_internship/" class="post-link">
+  		<h4 class="post-title">My Facebook Internship</h4>
+  		<p class="post-summary">Living the wonders of the Facelife</p>
+  	  </a>
+  	</div>
+    
+  </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+	<div class="footer-left">
+		Peter Goldsborough
+	</div>
+	
+        <div class="social-icons">
+		
+		
+			<a class="fa fa-stack-overflow" href="https://stackoverflow.com/users/1810440"></a>
+		
+		
+			<a class="fa fa-twitter" href="https://twitter.com/pegoldsborough"></a>
+		
+		
+			<a class="fa fa-github" href="https://github.com/goldsborough"></a>
+		
+		
+		
+			<a class="fa fa-envelope" href="mailto:peter@goldsborough.me"></a>
+		
+		
+			<a class="fa fa-linkedin" href="https://www.linkedin.com/in/petergoldsborough"></a>
+		
+		
+		
+		
+		
+			<a class="fa fa-paypal" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SGAMY6ME8YMSC"></a>
+		
+		
+			<a class="fa fa-rss" href="/feed.xml"></a>
+		
+</div>
+
+      
+	<div class="footer-right">
+		Based on <a href="https://github.com/johnotander/pixyll">pixyll</a> by <a href="http://johnotander.com">John Otander</a>.
+	</div>
+</footer>
+</body>
+</html>

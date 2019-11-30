@@ -1,0 +1,200 @@
+code {
+	background-color: #f4f4f4;
+}
+.dont-clear-float {
+	clear: none;
+}
+
+li.L0, li.L1, li.L2, li.L3,
+li.L5, li.L6, li.L7, li.L8 {
+	list-style-type: decimal !important;
+}
+
+ol.linenums {
+	margin-left: 0;
+}
+
+
+.entry-content table { 
+	border-collapse: collapse;
+	text-align: center; 
+	width: 100%;
+	font: Trebuchet MS, Helvetica, sans-serif; 
+	background: #fff; 
+	overflow: hidden; 
+	border: 1px solid #EDEDED; 
+	-webkit-border-radius: 3px; 
+	-moz-border-radius: 3px; 
+	border-radius: 3px;
+	caption-side: bottom;
+}
+.entry-content table td, table th { 
+	padding: 3px 10px; 
+}
+.entry-content table thead th {
+	background-color:#70AD47;
+	color:#FFFFFF;
+	font-size: 13px;
+	font-weight: bold;
+	text-transform: none;
+	letter-spacing: normal;
+	line-height: normal;
+	border-left: 1px solid #EDEDED; 
+}
+.entry-content table thead th a {
+	color:#FFFFFF;
+}
+.entry-content table thead th:first-child {
+	border: none; 
+}
+.entry-content table tbody td {
+	color: #000000;
+	border-bottom: 1px solid #EDEDED;
+	font-size: 12px;
+	font-weight: normal; 
+}
+.entry-content table tbody .alt td {
+	background: #EDEDED;
+	border: 0px solid;
+}
+.entry-content table tbody td:first-child {
+	border-left: none; 
+}
+.entry-content table tbody tr:last-child td {
+	border-bottom: none; 
+}
+.entry-content table tfoot td div {
+	border-top: 1px solid #EDEDED;
+	background: #70AD47;
+} 
+.entry-content table tfoot td {
+	padding: 0; font-size: 12px 
+}
+
+.entry-content table caption {
+  max-width: 100%; 
+}
+
+.entry-content table caption {
+  background: #f4f4f4;
+  border-left: 3px solid #dbdbdb;
+	text-align: left;
+  font-size: 11px;
+  line-height: 14px;
+  margin: 5px 0 10px 0;
+  padding: 5px 8px; 
+}
+
+.wp-caption .wp-caption-text {
+	margin-top: 5px;
+}
+
+.entry-content h3 {
+	font-size: 16px;
+}
+
+.mobile-theme .menu-search {
+	background: #75b800;
+	-webkit-box-shadow: inset 0 -1px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.4);
+	-moz-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.4);
+	box-shadow: inset 0 -1px 0 rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.mobile-theme .search-form #s {
+	background: #458a15;
+}
+
+.mobile-theme .menu-search,
+.mobile-theme #access,
+.mobile-theme .menu-toggle,
+.mobile-theme #access .menu-label {
+	height: 45px;
+}
+
+.mobile-theme a,
+.mobile-theme .commentlist .edit-link a::before,
+.mobile-theme .entry-meta .comments-link a::before,
+.mobile-theme .entry-meta .edit-link a::before,
+a.comment-reply-link::before {
+	color: #458a15;
+}
+
+.mobile-theme .menu-search ::-webkit-input-placeholder {
+	color: #fff;
+}
+
+.mobile-theme .menu-search :-moz-placeholder {
+/* Firefox 18- */
+	color: #fff;
+}
+
+.mobile-theme .menu-search ::-moz-placeholder {
+/* Firefox 19+ */
+	color: #fff;
+}
+
+.mobile-theme .menu-search :-ms-input-placeholder {
+	color: #fff;
+}
+
+.mobile-theme #site-title a {
+	color: #458a15;
+}
+
+.mobile-theme #site-description {
+	display: none;
+}
+
+.mobile-theme #nav-below a,
+.mobile-theme #nav-single a {
+	background: #75b800;
+	color: #fff;
+}
+
+.mobile-theme #site-generator a {
+	color: #458a15;
+}
+
+.mobile-theme #respond input#submit {
+	background-color: #458a15;
+	background-image: none;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-o-border-radius: 0;
+	-ms-border-radius: 0;
+	border-radius: 0;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.6);
+	-webkit-appearance: none;
+}
+
+.mobile-theme #branding hgroup {
+	margin-bottom: .6em;
+}
+
+.mobile-theme #site-generator a[href="http://wordpress.org/"] {
+	display: none;
+}
+
+.mobile-theme #site-title span,
+.mobile-theme #site-title a {
+	display: block;
+}
+
+.mobile-theme #branding {
+	background: #000;
+}
+
+.mobile-theme #site-title a {
+	height: 40px;
+	width: 433px;
+	background: url('/wp-content/themes/parallel-forall/assets/img/parallel-logo.png') 0 0 no-repeat;
+	text-indent: -9999em;
+}
+
+@media (max-width: 480px) {
+	.mobile-theme #site-title a {
+		height: 62px;
+		width: 273px;
+		background: url('/wp-content/themes/parallel-forall/assets/img/devzone-logo-mob.jpg') 0 0 no-repeat;
+	}
+}

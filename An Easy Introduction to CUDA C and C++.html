@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>
+<html class="no-js ie6 oldie" lang="en-US" prefix="og: http://ogp.me/ns#"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js ie7 oldie" lang="en-US" prefix="og: http://ogp.me/ns#"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js ie8 oldie" lang="en-US" prefix="og: http://ogp.me/ns#"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en-US" prefix="og: http://ogp.me/ns#"> <!--<![endif]-->
+<head>
+    <meta charset="UTF-8"/><script type="text/javascript">window.NREUM||(NREUM={}),__nr_require=function(e,n,t){function r(t){if(!n[t]){var o=n[t]={exports:{}};e[t][0].call(o.exports,function(n){var o=e[t][1][n];return r(o||n)},o,o.exports)}return n[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<t.length;o++)r(t[o]);return r}({1:[function(e,n,t){function r(){}function o(e,n,t){return function(){return i(e,[c.now()].concat(u(arguments)),n?null:this,t),n?void 0:this}}var i=e("handle"),a=e(3),u=e(4),f=e("ee").get("tracer"),c=e("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],d="api-",l=d+"ixn-";a(p,function(e,n){s[n]=o(d+n,!0,"api")}),s.addPageAction=o(d+"addPageAction",!0),s.setCurrentRouteName=o(d+"routeName",!0),n.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(e,n){var t={},r=this,o="function"==typeof n;return i(l+"tracer",[c.now(),e,t],r),function(){if(f.emit((o?"":"no-")+"fn-start",[c.now(),r,o],t),o)try{return n.apply(this,arguments)}catch(e){throw f.emit("fn-err",[arguments,this,e],t),e}finally{f.emit("fn-end",[c.now()],t)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,n){m[n]=o(l+n)}),newrelic.noticeError=function(e,n){"string"==typeof e&&(e=new Error(e)),i("err",[e,c.now(),!1,n])}},{}],2:[function(e,n,t){function r(e,n){if(!o)return!1;if(e!==o)return!1;if(!n)return!0;if(!i)return!1;for(var t=i.split("."),r=n.split("."),a=0;a<r.length;a++)if(r[a]!==t[a])return!1;return!0}var o=null,i=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var u=navigator.userAgent,f=u.match(a);f&&u.indexOf("Chrome")===-1&&u.indexOf("Chromium")===-1&&(o="Safari",i=f[1])}n.exports={agent:o,version:i,match:r}},{}],3:[function(e,n,t){function r(e,n){var t=[],r="",i=0;for(r in e)o.call(e,r)&&(t[i]=n(r,e[r]),i+=1);return t}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],4:[function(e,n,t){function r(e,n,t){n||(n=0),"undefined"==typeof t&&(t=e?e.length:0);for(var r=-1,o=t-n||0,i=Array(o<0?0:o);++r<o;)i[r]=e[n+r];return i}n.exports=r},{}],5:[function(e,n,t){n.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(e,n,t){function r(){}function o(e){function n(e){return e&&e instanceof r?e:e?f(e,u,i):i()}function t(t,r,o,i){if(!d.aborted||i){e&&e(t,r,o);for(var a=n(o),u=v(t),f=u.length,c=0;c<f;c++)u[c].apply(a,r);var p=s[y[t]];return p&&p.push([b,t,r,a]),a}}function l(e,n){h[e]=v(e).concat(n)}function m(e,n){var t=h[e];if(t)for(var r=0;r<t.length;r++)t[r]===n&&t.splice(r,1)}function v(e){return h[e]||[]}function g(e){return p[e]=p[e]||o(t)}function w(e,n){c(e,function(e,t){n=n||"feature",y[t]=n,n in s||(s[n]=[])})}var h={},y={},b={on:l,addEventListener:l,removeEventListener:m,emit:t,get:g,listeners:v,context:n,buffer:w,abort:a,aborted:!1};return b}function i(){return new r}function a(){(s.api||s.feature)&&(d.aborted=!0,s=d.backlog={})}var u="nr@context",f=e("gos"),c=e(3),s={},p={},d=n.exports=o();d.backlog=s},{}],gos:[function(e,n,t){function r(e,n,t){if(o.call(e,n))return e[n];var r=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,n,{value:r,writable:!0,enumerable:!1}),r}catch(i){}return e[n]=r,r}var o=Object.prototype.hasOwnProperty;n.exports=r},{}],handle:[function(e,n,t){function r(e,n,t,r){o.buffer([e],r),o.emit(e,n,t)}var o=e("ee").get("handle");n.exports=r,r.ee=o},{}],id:[function(e,n,t){function r(e){var n=typeof e;return!e||"object"!==n&&"function"!==n?-1:e===window?0:a(e,i,function(){return o++})}var o=1,i="nr@id",a=e("gos");n.exports=r},{}],loader:[function(e,n,t){function r(){if(!E++){var e=x.info=NREUM.info,n=l.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&n))return s.abort();c(y,function(n,t){e[n]||(e[n]=t)}),f("mark",["onload",a()+x.offset],null,"api");var t=l.createElement("script");t.src="https://"+e.agent,n.parentNode.insertBefore(t,n)}}function o(){"complete"===l.readyState&&i()}function i(){f("mark",["domContent",a()+x.offset],null,"api")}function a(){return O.exists&&performance.now?Math.round(performance.now()):(u=Math.max((new Date).getTime(),u))-x.offset}var u=(new Date).getTime(),f=e("handle"),c=e(3),s=e("ee"),p=e(2),d=window,l=d.document,m="addEventListener",v="attachEvent",g=d.XMLHttpRequest,w=g&&g.prototype;NREUM.o={ST:setTimeout,SI:d.setImmediate,CT:clearTimeout,XHR:g,REQ:d.Request,EV:d.Event,PR:d.Promise,MO:d.MutationObserver};var h=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1130.min.js"},b=g&&w&&w[m]&&!/CriOS/.test(navigator.userAgent),x=n.exports={offset:u,now:a,origin:h,features:{},xhrWrappable:b,userAgent:p};e(1),l[m]?(l[m]("DOMContentLoaded",i,!1),d[m]("load",r,!1)):(l[v]("onreadystatechange",o),d[v]("onload",r)),f("mark",["firstbyte",u],null,"api");var E=0,O=e(5)},{}]},{},["loader"]);</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="profile" href="http://gmpg.org/xfn/11"/>
+    <link rel="pingback" href="https://devblogs.nvidia.com/xmlrpc.php"/>
+  
+<!-- This site is optimized with the Yoast SEO plugin v9.5 - https://yoast.com/wordpress/plugins/seo/ -->
+<title>An Easy Introduction to CUDA C and C++</title>
+<meta name="description" content="This first post in a series on CUDA C and C++ covers the basic concepts of parallel programming on the CUDA platform with C/C++."/>
+<link rel="canonical" href="https://devblogs.nvidia.com/easy-introduction-cuda-c-and-c/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="An Easy Introduction to CUDA C and C++" />
+<meta property="og:description" content="This first post in a series on CUDA C and C++ covers the basic concepts of parallel programming on the CUDA platform with C/C++." />
+<meta property="og:url" content="https://devblogs.nvidia.com/easy-introduction-cuda-c-and-c/" />
+<meta property="og:site_name" content="NVIDIA Developer Blog" />
+<meta property="article:publisher" content="https://www.facebook.com/NVIDIA/" />
+<meta property="article:tag" content="C++" />
+<meta property="article:tag" content="CUDA" />
+<meta property="article:tag" content="Development Tools and Libraries" />
+<meta property="article:section" content="HPC" />
+<meta property="article:published_time" content="2012-10-31T08:20:21+00:00" />
+<meta property="article:modified_time" content="2018-04-23T23:29:22+00:00" />
+<meta property="og:updated_time" content="2018-04-23T23:29:22+00:00" />
+<meta property="og:image" content="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K.jpg" />
+<meta property="og:image:secure_url" content="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="1191" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:description" content="This first post in a series on CUDA C and C++ covers the basic concepts of parallel programming on the CUDA platform with C/C++." />
+<meta name="twitter:title" content="An Easy Introduction to CUDA C and C++" />
+<meta name="twitter:site" content="@gpucomputing" />
+<meta name="twitter:image" content="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K.jpg" />
+<meta name="twitter:creator" content="@harrism" />
+<script type='application/ld+json'>{"@context":"https://schema.org","@type":"Organization","url":"https://devblogs.nvidia.com/","sameAs":["https://www.facebook.com/NVIDIA/","https://www.linkedin.com/company-\u2026","https://www.youtube.com/user/nvidia","https://twitter.com/gpucomputing"],"@id":"https://devblogs.nvidia.com/#organization","name":"NVIDIA Corporation","logo":"https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2017/01/NVLogo_2D.png"}</script>
+<!-- / Yoast SEO plugin. -->
+
+<link rel='dns-prefetch' href='//devblogs.nvidia.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//platform-api.sharethis.com' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//unpkg.com' />
+<link rel='dns-prefetch' href='//cdnjs.cloudflare.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title="NVIDIA Developer Blog &raquo; Feed" href="https://devblogs.nvidia.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="NVIDIA Developer Blog &raquo; Comments Feed" href="https://devblogs.nvidia.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="NVIDIA Developer Blog &raquo; An Easy Introduction to CUDA C and C++ Comments Feed" href="https://devblogs.nvidia.com/easy-introduction-cuda-c-and-c/feed/" />
+<meta property="og:image" content="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-362x359.jpg"/>
+<!-- This site uses the Google Analytics by MonsterInsights plugin v7.4.2 - Using Analytics tracking - https://www.monsterinsights.com/ -->
+<script type="text/javascript" data-cfasync="false">
+	var mi_version         = '7.4.2';
+	var mi_track_user      = true;
+	var mi_no_track_reason = '';
+	
+	var disableStr = 'ga-disable-UA-137382579-1';
+
+	/* Function to detect opted out users */
+	function __gaTrackerIsOptedOut() {
+		return document.cookie.indexOf(disableStr + '=true') > -1;
+	}
+
+	/* Disable tracking if the opt-out cookie exists. */
+	if ( __gaTrackerIsOptedOut() ) {
+		window[disableStr] = true;
+	}
+
+	/* Opt-out function */
+	function __gaTrackerOptout() {
+	  document.cookie = disableStr + '=true; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/';
+	  window[disableStr] = true;
+	}
+	
+	if ( mi_track_user ) {
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','__gaTracker');
+
+		__gaTracker('create', 'UA-137382579-1', 'auto');
+		__gaTracker('set', 'forceSSL', true);
+		__gaTracker('require', 'linkid', 'linkid.js');
+		__gaTracker('send','pageview');
+	} else {
+		console.log( "" );
+		(function() {
+			/* https://developers.google.com/analytics/devguides/collection/analyticsjs/ */
+			var noopfn = function() {
+				return null;
+			};
+			var noopnullfn = function() {
+				return null;
+			};
+			var Tracker = function() {
+				return null;
+			};
+			var p = Tracker.prototype;
+			p.get = noopfn;
+			p.set = noopfn;
+			p.send = noopfn;
+			var __gaTracker = function() {
+				var len = arguments.length;
+				if ( len === 0 ) {
+					return;
+				}
+				var f = arguments[len-1];
+				if ( typeof f !== 'object' || f === null || typeof f.hitCallback !== 'function' ) {
+					console.log( 'Not running function __gaTracker(' + arguments[0] + " ....) because you are not being tracked. " + mi_no_track_reason );
+					return;
+				}
+				try {
+					f.hitCallback();
+				} catch (ex) {
+
+				}
+			};
+			__gaTracker.create = function() {
+				return new Tracker();
+			};
+			__gaTracker.getByName = noopnullfn;
+			__gaTracker.getAll = function() {
+				return [];
+			};
+			__gaTracker.remove = noopfn;
+			window['__gaTracker'] = __gaTracker;
+					})();
+		}
+</script>
+<!-- / Google Analytics by MonsterInsights -->
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/devblogs.nvidia.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.0.3"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56760,9792,65039],[55358,56760,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='wp-block-library-css'  href='https://c0.wp.com/c/5.0.3/wp-includes/css/dist/block-library/style.min.css' type='text/css' media='all' />
+<link rel='stylesheet' id='easy_load_more-frontend-css'  href='https://devblogs.nvidia.com/wp-content/plugins/easy-load-more/assets/css/frontend.css?ver=1.0.0' type='text/css' media='all' />
+<style id='easy_load_more-frontend-inline-css' type='text/css'>
+.elm-button { background: #21759B; color: #FFFFFF; }
+.elm-button:hover, .elm-button:active, .elm-button:focus { background: #4d91af; }
+.elm-loading-icon { fill: #FFFFFF; stroke: #FFFFFF; }
+
+</style>
+<link rel='stylesheet' id='share-this-share-buttons-sticky-css'  href='https://devblogs.nvidia.com/wp-content/plugins/sharethis-share-buttons/css/mu-style.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='sidr-style-css'  href='https://devblogs.nvidia.com/wp-content/plugins/wp-sidr/stylesheets/jquery.sidr.dark.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='bootstrap-css'  href='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/css/bootstrap/css/bootstrap.min.css?ver=0.2' type='text/css' media='all' />
+<link rel='stylesheet' id='styles-css'  href='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/css/style.css?ver=0.2' type='text/css' media='all' />
+<link rel='stylesheet' id='custom-styles-css'  href='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/css/custom.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='font-awesome-css'  href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.0.3' type='text/css' media='all' />
+<link rel='stylesheet' id='jetpack_css-css'  href='https://c0.wp.com/p/jetpack/7.0/css/jetpack.css' type='text/css' media='all' />
+<script type='text/javascript'>
+/* <![CDATA[ */
+var monsterinsights_frontend = {"js_events_tracking":"true","download_extensions":"doc,exe,js,pdf,ppt,tgz,zip,xls,gz,targz","inbound_paths":"[]","home_url":"https:\/\/devblogs.nvidia.com","hash_tracking":"false"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/plugins/google-analytics-for-wordpress/assets/js/frontend.min.js?ver=7.4.2'></script>
+<script type='text/javascript' src='https://c0.wp.com/c/5.0.3/wp-includes/js/jquery/jquery.js'></script>
+<script type='text/javascript' src='https://c0.wp.com/c/5.0.3/wp-includes/js/jquery/jquery-migrate.min.js'></script>
+<script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5a5be45672b70f00137efeb7&#038;product=inline-share-buttons-wp'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/plugins/wp-sidr/js/jquery.sidr.min.js'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/js/modernizr-2.5.3.min.js?ver=0.2'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/js/jquery.placeholder.min.js?ver=0.2'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/css/bootstrap/js/bootstrap.min.js?ver=0.2'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://devblogs.nvidia.com/xmlrpc.php?rsd" />
+
+<link rel='shortlink' href='https://wp.me/p9zsGv-56' />
+<link rel="alternate" type="application/json+oembed" href="https://devblogs.nvidia.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fdevblogs.nvidia.com%2Feasy-introduction-cuda-c-and-c%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://devblogs.nvidia.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fdevblogs.nvidia.com%2Feasy-introduction-cuda-c-and-c%2F&#038;format=xml" />
+<script type="text/javascript">
+	window._zem_rp_post_id = '316';
+	window._zem_rp_thumbnails = false;
+	window._zem_rp_post_title = 'An+Easy+Introduction+to+CUDA+C+and+C%2B%2B';
+	window._zem_rp_post_tags = ['c%2B%2B', 'cuda', 'development+tools+and+librarie', 'accelerated+computing', 'gpu', 'thread', 'seri', 'state', 'code', 'cc', 'cube', 'post', 'model', 'cuda', 'platform', 'memori', 'comput', 'a', 'program'];
+	window._zem_rp_static_base_url = 'https://content.zemanta.com/static/';
+	window._zem_rp_wp_ajax_url = 'https://devblogs.nvidia.com/wp-admin/admin-ajax.php';
+	window._zem_rp_plugin_version = '1.14';
+	window._zem_rp_num_rel_posts = '4';
+</script>
+<link rel="stylesheet" href="https://devblogs.nvidia.com/wp-content/plugins/related-posts-by-zemanta/static/themes/modern.css?version=1.14" />
+<style type="text/css">
+.related_post_title {
+}
+ul.related_post {
+}
+ul.related_post li {
+}
+ul.related_post li a {
+}
+ul.related_post li img {
+}</style>
+<script src="//assets.adobedtm.com/b92787824f2e0e9b68dc2e993f9bd995339fe417/satelliteLib-7ba51e58dc61bcb0e9311aadd02a0108ab24cc6c.js"></script><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-137382579-1"></script><script>  window.dataLayer = window.dataLayer || [];  function gtag(){dataLayer.push(arguments);}  gtag('js', new Date());  gtag('config', 'UA-137382579-1');</script>
+	<!--wp code prettify-->
+<link rel='dns-prefetch' href='//v0.wordpress.com'/>
+<link rel='dns-prefetch' href='//widgets.wp.com'/>
+<link rel='dns-prefetch' href='//s0.wp.com'/>
+<link rel='dns-prefetch' href='//0.gravatar.com'/>
+<link rel='dns-prefetch' href='//1.gravatar.com'/>
+<link rel='dns-prefetch' href='//2.gravatar.com'/>
+<link rel='dns-prefetch' href='//c0.wp.com'/>
+<style type='text/css'>img#wpstats{display:none}</style>			<link rel="stylesheet" type="text/css" id="wp-custom-css" href="https://devblogs.nvidia.com/?custom-css=0cf7488464" />
+		</head>
+<body class="post-template-default single single-post postid-316 single-format-standard">
+  <div class="wrapper">
+    <div class="content">
+
+<div id="page" class="hfeed">
+  <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header" style="">
+            <div class="logo-header">
+                <a href="https://developer.nvidia.com/"><img
+                            alt="NVIDIA Accelerated Computing" width="112"
+                            src="https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/img/nvidia-logo.svg"></a>
+                <a href="https://developer.nvidia.com/"
+                   class="title accelerated">Developer</a>
+            </div>
+        </div>
+        <div class="navbar-login" id="navbar-login" style="">
+            <ul class="navbar-margin navbar-right navbar-margin-media login-nav">
+                <li class="search" id="search-top">
+
+                    <div class="wrap-search-field">
+                        <a href="#"
+                           id="trigger-search-top"
+                           class="hidden-xs">
+                            <i class="fa fa-search"></i>
+                        </a>
+                        <a href="#"
+                           id="trigger-search-top-mobile"
+                           class="hidden-lg hiddem-md hidden-sm">
+                            <i class="fa fa-search"></i>
+                        </a>
+                        <div class="search-form form-field"
+                             id="search-top-form">
+                            <form action="https://devblogs.nvidia.com/"
+                                  accept-charset="UTF-8" method="get"
+                                  id="search-theme-form-input">
+                                <div>
+                                    <div id="search" class="container-inline">
+                                        <div class=" form-type-textfield form-item-search-theme-form form-item form-group">
+                                            <div class="input">
+                                                <input type="text"
+                                                       placeholder="Search..."
+                                                       name="search_theme_form"
+                                                       id="search-top-bar"
+                                                       value=""
+                                                       title="Enter the terms you wish to search for."
+                                                       class="form-text form-control "
+                                                       style="">
+                                            </div>
+                                        </div>
+                                        <input type="hidden"
+                                               name="form_build_id"
+                                               id="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U"
+                                               value="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U">
+                                        <input type="hidden" name="form_id"
+                                               id="edit-search-theme-form"
+                                               value="search_theme_form">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="wrap-search-checkbox">
+                        <div class="search-form form-checkbox"
+                             id="search-top-form">
+                            <form action="https://devblogs.nvidia.com/"
+                                  accept-charset="UTF-8" method="get"
+                                  id="search-theme-form">
+                                <div>
+                                    <div id="search" class="container-inline">
+                                        <div class=" form-type-textfield form-item-search-theme-form form-item form-group">
+                                            <div class="input">
+                                                <div id="cuda-search-wrapper">
+                                                    <input type="checkbox"
+                                                           id="cuda-search"
+                                                           name="cuda-search"
+                                                           value="1"> <label
+                                                            for="cuda-search">Search NVIDIA Developer</label>
+                                                </div>
+                                                <input type="hidden" id="s"
+                                                       name="s" value="">
+                                            </div>
+                                        </div>
+                                        <input type="hidden"
+                                               name="form_build_id"
+                                               id="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U"
+                                               value="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U">
+                                        <input type="hidden" name="form_id"
+                                               id="edit-search-theme-form"
+                                               value="search_theme_form">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </li>
+                <li class="cuda-program-link">
+                    <a href="https://developer.nvidia.com/accelerated-computing-developer">Join                    </a>
+                </li>
+                <li>
+                    <a href="https://developer.nvidia.com/user">Login</a>
+                </li>
+            </ul>
+        </div>
+
+        <!--TESTING-->
+        <div class="mobile-search-field hidden-lg hidden-md hidden-sm">
+          <div class="wrap-search-field-mobile">
+            <div class="search-form-mobile form-field"
+                 id="search-top-form-mobile">
+              <a href="#"
+                 id="trigger-search-top-mobile-active">
+                  <i class="fa fa-search"></i>
+              </a>
+                <form action="https://devblogs.nvidia.com/"
+                      accept-charset="UTF-8" method="get"
+                      id="search-theme-form-input-mobile">
+                    <div>
+                        <div id="search" class="container-inline">
+                            <div class=" form-type-textfield form-item-search-theme-form form-item form-group">
+                                <div class="input">
+                                    <input type="text"
+                                           placeholder="Search..."
+                                           name="search_theme_form"
+                                           id="search-top-bar-mobile"
+                                           value=""
+                                           title="Enter the terms you wish to search for."
+                                           class="form-text form-control "
+                                           style="">
+                                </div>
+                            </div>
+                            <input type="hidden"
+                                   name="form_build_id"
+                                   id="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U"
+                                   value="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U">
+                            <input type="hidden" name="form_id"
+                                   id="edit-search-theme-form"
+                                   value="search_theme_form">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="wrap-search-checkbox-mobile">
+              <div class="search-form form-checkbox"
+                   id="search-top-form">
+                  <form action="https://devblogs.nvidia.com/"
+                        accept-charset="UTF-8" method="get"
+                        id="search-theme-form">
+                      <div>
+                          <div id="search" class="container-inline">
+                              <div class=" form-type-textfield form-item-search-theme-form form-item form-group">
+                                  <div class="input">
+                                      <div id="cuda-search-wrapper-mobile">
+                                          <input type="checkbox"
+                                                 id="cuda-search-mobile"
+                                                 name="cuda-search-mobile"
+                                                 value="1">
+                                          <label for="cuda-search-mobile">Search NVIDIA Developer</label>
+                                      </div>
+                                      <input type="hidden" id="s"
+                                             name="s" value="">
+                                  </div>
+                              </div>
+                              <input type="hidden"
+                                     name="form_build_id"
+                                     id="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U"
+                                     value="form-psuQ7x3mMxCYiM5jWNkM_GhZlUH-jE68gGh2xJ6dG4U">
+                              <input type="hidden" name="form_id"
+                                     id="edit-search-theme-form"
+                                     value="search_theme_form">
+                          </div>
+                      </div>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--END TESTING-->
+    </div>
+</nav>
+    <header id="branding" role="banner" class="clearfix">
+        <nav id="access" role="navigation" class="clearfix">
+            <div class="container">
+                <h1 class="blog-title"><a
+                            href="https://devblogs.nvidia.com/"><span>Nvidia</span>
+                        developer blog</a></h1>
+                <h3 class="assistive-text">Main menu</h3>
+                              <div class="skip-link"><a class="assistive-text" href="#content"
+                                          title="Skip to primary content">Skip to primary content</a>
+                </div>
+                <div class="skip-link"><a class="assistive-text"
+                                          href="#secondary"
+                                          title="Skip to secondary content">Skip to secondary content</a>
+                </div>
+              
+              
+                <div class="home-header-button-box">
+                    <div class="home-button developer-button">
+                        <a target="_blank"
+                           href="https://news.developer.nvidia.com/">
+                            <i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                            <span class="hidden-xs hidden-sm">Developer news</span>
+                        </a>
+                    </div>
+                    <div class="home-button subscribe-button">
+                        <a href="#">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                            <span class="hidden-xs hidden-sm">Subscribe</span>
+                        </a>
+                    </div>
+                    <div class="home-button twitter-button">
+                        <a href="#">
+                            <i class="fa fa-twitter" aria-hidden="true"></i>
+                            <span class="hidden-xs hidden-sm">Follow US</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav><!-- #access -->
+      
+        <div class="twitter-menu clearfix">
+            <div class="container">
+              <div class="flexbox-menu clearfix twitter-menu-content"><div class='twitter-menu-link'>
+                                 <a onclick="window.open('https://twitter.com/NVIDIAAIDev','','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=1,Resizable=1,Width=800,Height=450, top='+((screen.height-600)/2)+',left='+((screen.width-700)/2)+'');" href="#">
+                                   <i class="fa fa-twitter" aria-hidden="true"></i>
+                                   NVIDIAAIDev
+                                 </a>
+                               </div><div class='twitter-menu-link'>
+                                 <a onclick="window.open('https://twitter.com/NVIDIAHPCDev','','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=1,Resizable=1,Width=800,Height=450, top='+((screen.height-600)/2)+',left='+((screen.width-700)/2)+'');" href="#">
+                                   <i class="fa fa-twitter" aria-hidden="true"></i>
+                                   NVIDIAHPCDev
+                                 </a>
+                               </div><div class='twitter-menu-link'>
+                                 <a onclick="window.open('https://twitter.com/NVIDIAGameDev','','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=1,Resizable=1,Width=800,Height=450, top='+((screen.height-600)/2)+',left='+((screen.width-700)/2)+'');" href="#">
+                                   <i class="fa fa-twitter" aria-hidden="true"></i>
+                                   NVIDIAGameDev
+                                 </a>
+                               </div><div class='twitter-menu-link'>
+                                 <a onclick="window.open('https://twitter.com/nvidiaembedded','','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=1,Resizable=1,Width=800,Height=450, top='+((screen.height-600)/2)+',left='+((screen.width-700)/2)+'');" href="#">
+                                   <i class="fa fa-twitter" aria-hidden="true"></i>
+                                   NVIDIAEmbedded
+                                 </a>
+                               </div><div class='twitter-menu-link'>
+                                 <a onclick="window.open('https://twitter.com/NVIDIADrive','','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=1,Resizable=1,Width=800,Height=450, top='+((screen.height-600)/2)+',left='+((screen.width-700)/2)+'');" href="#">
+                                   <i class="fa fa-twitter" aria-hidden="true"></i>
+                                   NVIDIADrive
+                                 </a>
+                               </div><div class='twitter-menu-link'>
+                                 <a onclick="window.open('https://twitter.com/NVIDIADesign','','Toolbar=0,Location=0,Directories=0,Status=0,Menubar=0,Scrollbars=1,Resizable=1,Width=800,Height=450, top='+((screen.height-600)/2)+',left='+((screen.width-700)/2)+'');" href="#">
+                                   <i class="fa fa-twitter" aria-hidden="true"></i>
+                                   NVIDIADesign
+                                 </a>
+                               </div></div>            </div>
+        </div>
+
+        <div class="subscribe-menu clearfix">
+            <div class="container">
+                <script src="//app-sj14.marketo.com/js/forms2/js/forms2.min.js"></script>
+                <form id="mktoForm_4191"></form>
+                <script>MktoForms2.loadForm("//app-sj14.marketo.com", "156-OFN-742", 4191);</script>
+                <script>
+                  MktoForms2.whenReady(function (form) {
+                    jQuery('.mktoFormRow:eq(0)').addClass('title-form col-lg-2 col-md-2 col-sm-12 col-xs-12');
+                    jQuery('.mktoFormRow:eq(9), .mktoFormRow:eq(10),.mktoFormRow:eq(11)').addClass('hidden');
+                    jQuery('.mktoFormRow:eq(1), .mktoFormRow:eq(2), .mktoFormRow:eq(3), .mktoFormRow:eq(4)').wrapAll('<div class="subscribe-wrap col-lg-5 col-md-5 col-sm-6 col-xs-12"></div>');
+                    jQuery('.mktoFormRow:eq(5), .mktoFormRow:eq(6), .mktoFormRow:eq(7), .mktoFormRow:eq(8)').wrapAll('<div class="subscribe-wrap col-lg-5 col-md-5 col-sm-6 col-xs-12"></div>');
+
+                    jQuery(':input[type="submit"]').prop('disabled', true);
+
+                    var form = jQuery('.mktoForm');
+                    var inputs = form.find(':input');
+                    form.on('change input paste', function(){
+                        var status = [];
+                        inputs.each(function(){
+                          if(this.value == '' || !jQuery(':input[type="checkbox"]').is(':checked')){
+                            return status.push('invalid');
+                          }
+                          else {
+                            return status.push('valid');
+                          }
+                        });
+
+                        if(status[0] == 'valid' && status[1] == 'valid' && status[2] == 'valid' && status[3] == 'valid' && status[4] == 'valid' && status[5] == 'valid' && status[6] == 'valid'){
+                          jQuery(':input[type="submit"]').prop('disabled', false);
+                        } else {
+                          jQuery(':input[type="submit"]').prop('disabled', true);
+                        }
+                    });
+                  });
+                </script>
+            </div>
+        </div>
+    </header>
+
+    <div id="main" class="clearfix">
+
+<div class="all-categories">
+    <nav class="navbar navbar-default topic-navigation">
+        <div class="hidden-sm hidden-md hidden-lg">
+            <button type="button" class="navbar-toggle"
+                    data-toggle="collapse"
+                    data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p class="topic-title hidden-sm hidden-md hidden-lg">Topics</p>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav hidden-sm hidden-md hidden-lg">
+              	<li class="cat-item cat-item-443"><a href="https://devblogs.nvidia.com/category/artificial-intelligence/" title="AI and Deep learning are used in the research community and in industry to help solve many big data problems such as computer vision, speech recognition, and natural language processing. The NVIDIA Deep Learning SDK provides high-performance tools and libraries to power innovative GPU-accelerated machine learning applications in the cloud, data centers, workstations, and embedded platforms.">AI / Deep Learning</a>
+</li>
+	<li class="cat-item cat-item-446"><a href="https://devblogs.nvidia.com/category/autonomous-machines/" title="Today&#039;s robots do more than just perform tasks. They learn, adapt, and evolve using capabilities like machine learning, computer vision, navigation, and more. NVIDIA Jetson uses the power of deep learning to drive this exciting new era of smart embedded robotics—from manufacturing and agriculture to security and home-based healthcare.">Autonomous Machines</a>
+</li>
+	<li class="cat-item cat-item-445"><a href="https://devblogs.nvidia.com/category/autonomous-vehicles/" title="The NVIDIA DRIVE Platform is an autonomous computing platform that enables automakers and Tier-1 suppliers to accelerate production of automated and autonomous vehicles. It scales from a palm-sized, energy efficient module for AutoCruise capabilities, to a powerful AI supercomputer capable of autonomous driving.">Autonomous Vehicles</a>
+</li>
+	<li class="cat-item cat-item-914"><a href="https://devblogs.nvidia.com/category/data-science/" title="Vision, IoT, HPC, and related technologies generate vast amounts of data. The parallel nature of NVIDIA GPUs make them ideal for helping make sense of these massive stores of data.">Data Science</a>
+</li>
+	<li class="cat-item cat-item-457"><a href="https://devblogs.nvidia.com/category/graphics-simulation/" title="Graphics and simulation developers need the best tools, samples, and libraries to bring their creations to life. NVIDIA provides access to the best technology in visual computing for game developers, professional graphics users, and virtual reality">Graphics / Simulation</a>
+</li>
+	<li class="cat-item cat-item-444"><a href="https://devblogs.nvidia.com/category/hpc/" title="
+
+GPU-accelerated computing is the use of a graphics processing unit (GPU) together with a CPU to accelerate deep learning, analytics, and engineering applications. With NVIDIA HPC SDKs, you can develop, optimize and deploy GPU-accelerated applications using widely-used languages such as C, C++, Python, Fortran and MATLAB.">HPC</a>
+</li>
+	<li class="cat-item cat-item-447"><a href="https://devblogs.nvidia.com/category/smart-cities/" title="
+
+Data is the lifeblood of the modern city. Today, it’s being captured by over 500 million cameras worldwide, and that number is growing exponentially. AI is the key to turning this information into insight to create smart cities. It’s transforming how we capture, inspect, and analyze data to impact everything from public safety, traffic, and parking management to law enforcement and city services.
+
+">Smart Cities</a>
+</li>
+            </ul>
+
+            <div class="visible-lg-block visible-md-block visible-sm-block">
+              <div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/artificial-intelligence/">AI / Deep Learning</a></div><div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/autonomous-machines/">Autonomous Machines</a></div><div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/autonomous-vehicles/">Autonomous Vehicles</a></div><div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/data-science/">Data Science</a></div><div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/graphics-simulation/">Graphics / Simulation</a></div><div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/hpc/">HPC</a></div><div class="all-categories-content"><a href="https://devblogs.nvidia.com/category/smart-cities/">Smart Cities</a></div>            </div>
+        </div>
+    </nav>
+</div>
+
+<div id="pf-post-view">
+    <div class="container">
+
+                  <article id="post-316" class="post-316 post type-post status-publish format-standard has-post-thumbnail hentry category-hpc tag-c tag-cuda tag-development-tools-and-libraries">
+                <header class="entry-header">
+                  <div class="category-posts-about"><a href="" title="Accelerated Computing">Accelerated Computing</a></div> &nbsp; <div class="category-posts-about"><a href="https://devblogs.nvidia.com/category/hpc/" title="HPC">HPC</a></div> &nbsp; 
+                    <h1 class="entry-title">An Easy Introduction to CUDA C and C++</h1>
+
+                    <div class="entry-meta">
+                        <div class="home-posts-author">
+                          By <a href="https://devblogs.nvidia.com/author/mharris/" title="Posts by Mark Harris" class="author url fn" rel="author">Mark Harris</a> | <a href="https://devblogs.nvidia.com/easy-introduction-cuda-c-and-c/" title="1:20 am" rel="bookmark"><time class="entry-date" datetime="1:20 am" pubdate>October 31, 2012 </time></a>
+                            <div class="posts-tag">
+                                <i class="fa fa-tag" aria-hidden="true"></i>
+                              Tags: <a href="https://devblogs.nvidia.com/tag/c/" rel="tag">C++</a>, <a href="https://devblogs.nvidia.com/tag/cuda/" rel="tag">CUDA</a>, <a href="https://devblogs.nvidia.com/tag/development-tools-and-libraries/" rel="tag">Development Tools and Libraries</a><br />                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="entry-content">
+                  <div style="margin-top: 0px; margin-bottom: 0px;" class="sharethis-inline-share-buttons" ></div><blockquote><p><img class="alignright wp-image-8319 size-medium" src="https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2012/10/CUDA_Cube_1K-300x298.jpg" alt="CUDA Cube" width="300" height="298" srcset="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-300x298.jpg 300w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-768x762.jpg 768w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-625x620.jpg 625w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-302x300.jpg 302w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-91x90.jpg 91w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-32x32.jpg 32w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-50x50.jpg 50w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-64x64.jpg 64w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-96x96.jpg 96w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-128x128.jpg 128w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-150x150.jpg 150w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-362x359.jpg 362w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-111x110.jpg 111w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-1024x1016.jpg 1024w, https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K.jpg 1200w" sizes="(max-width: 300px) 100vw, 300px" />Update (January 2017): Check out a new, <a href="https://devblogs.nvidia.com/parallelforall/even-easier-introduction-cuda/">even easier introduction to CUDA</a>!</p></blockquote>
+<p>This post is the first in a series on CUDA C and C++, which is the C/C++ interface to the CUDA parallel computing platform. This series of posts assumes familiarity with programming in C. We will be running a parallel series of posts about CUDA Fortran targeted at Fortran programmers . These two series will cover the basic concepts of parallel computing on the CUDA platform. From here on unless I state otherwise, I will use the term &#8220;CUDA C&#8221; as shorthand for &#8220;CUDA C and C++&#8221;. CUDA C is essentially C/C++ with a few extensions that allow one to execute functions on the GPU using many threads in parallel.</p>
+<h1>CUDA Programming Model Basics</h1>
+<p>Before we jump into CUDA C code, those new to CUDA will benefit from a basic description of the CUDA programming model and some of the terminology used.</p>
+<p>The CUDA programming model is a heterogeneous model in which both the CPU and GPU are used. In CUDA, the <em>host</em> refers to the CPU and its memory, while the <em>device</em> refers to the GPU and its memory. Code run on the host can manage memory on both the host and device, and also launches<em> kernels</em> which are functions executed on the device. These kernels are executed by many GPU threads in parallel.</p>
+<p>Given the heterogeneous nature of the CUDA programming model, a typical sequence of operations for a CUDA C program is:</p>
+<ol>
+<li>Declare and allocate host and device memory.</li>
+<li>Initialize host data.</li>
+<li>Transfer data from the host to the device.</li>
+<li>Execute one or more kernels.</li>
+<li>Transfer results from the device to the host.</li>
+</ol>
+<p>Keeping this sequence of operations in mind, let&#8217;s look at a CUDA C example.<span id="more-316"></span></p>
+<h1>A First CUDA C Program</h1>
+<p>In a recent post, I illustrated <a title="Six Ways to SAXPY" href="https://devblogs.nvidia.com/parallelforall/six-ways-saxpy/">Six Ways to SAXPY</a>, which includes a CUDA C version. SAXPY stands for &#8220;Single-precision A*X Plus Y&#8221;, and is a good &#8220;hello world&#8221; example for parallel computation. In this post I will dissect a more complete version of the CUDA C SAXPY, explaining in detail what is done and why. The complete SAXPY code is:</p>
+<pre class="prettyprint">#include &lt;stdio.h&gt;
+
+__global__
+void saxpy(int n, float a, float *x, float *y)
+{
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i &lt; n) y&#91;i&#93; = a*x&#91;i&#93; + y&#91;i&#93;;
+}
+
+int main(void)
+{
+  int N = 1&lt;&lt;20;
+  float *x, *y, *d_x, *d_y;
+  x = (float*)malloc(N*sizeof(float));
+  y = (float*)malloc(N*sizeof(float));
+
+  cudaMalloc(&amp;d_x, N*sizeof(float)); 
+  cudaMalloc(&amp;d_y, N*sizeof(float));
+
+  for (int i = 0; i &lt; N; i++) {
+    x&#91;i&#93; = 1.0f;
+    y&#91;i&#93; = 2.0f;
+  }
+
+  cudaMemcpy(d_x, x, N*sizeof(float), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_y, y, N*sizeof(float), cudaMemcpyHostToDevice);
+
+  &#47;&#47; Perform SAXPY on 1M elements
+  saxpy&lt;&lt;&lt;(N+255)&#47;256, 256&gt;&gt;&gt;(N, 2.0f, d_x, d_y);
+
+  cudaMemcpy(y, d_y, N*sizeof(float), cudaMemcpyDeviceToHost);
+
+  float maxError = 0.0f;
+  for (int i = 0; i &lt; N; i++)
+    maxError = max(maxError, abs(y&#91;i&#93;-4.0f));
+  printf(&#34;Max error: %f\n&#34;, maxError);
+
+  cudaFree(d_x);
+  cudaFree(d_y);
+  free(x);
+  free(y);
+}</pre>
+<p>The function <code>saxpy</code> is the kernel that runs in parallel on the GPU, and the <code>main</code> function is the host code. Let&#8217;s begin our discussion of this program with the host code.</p>
+<h2>Host Code</h2>
+<p>The main function declares two pairs of arrays.</p>
+<pre class="prettyprint">  float *x, *y, *d_x, *d_y;
+  x = (float*)malloc(N*sizeof(float));
+  y = (float*)malloc(N*sizeof(float));
+
+  cudaMalloc(&amp;d_x, N*sizeof(float)); 
+  cudaMalloc(&amp;d_y, N*sizeof(float));</pre>
+<p>The pointers <code>x</code> and <code>y</code> point to the <em>host</em> arrays, allocated with <code>malloc</code> in the typical fashion, and the <code>d_x</code> and <code>d_y</code> arrays point to <em>device</em> arrays allocated with the <code>cudaMalloc</code> function from the CUDA runtime API. The host and device in CUDA have separate memory spaces, both of which can be managed from host code (CUDA C kernels can also allocate device memory on devices that support it).</p>
+<p>The host code then initializes the host arrays.  Here we set <code>x</code> to an array of ones, and <code>y</code> to an array of twos.</p>
+<pre class="prettyprint">  for (int i = 0; i &lt; N; i++) {
+    x&#91;i&#93; = 1.0f;
+    y&#91;i&#93; = 2.0f;
+  }</pre>
+<p>To initialize the device arrays, we simply copy the data from <code>x</code> and <code>y</code> to the corresponding device arrays <code>d_x</code> and <code>d_y</code> using <code>cudaMemcpy</code>, which works just like the standard C <code>memcpy</code> function, except that it takes a fourth argument which specifies the direction of the copy. In this case we use <code>cudaMemcpyHostToDevice</code> to specify that the first (destination) argument is a device pointer and the second (source) argument is a host pointer.</p>
+<pre class="prettyprint">  cudaMemcpy(d_x, x, N*sizeof(float), cudaMemcpyHostToDevice);
+  cudaMemcpy(d_y, y, N*sizeof(float), cudaMemcpyHostToDevice);</pre>
+<p>After running the kernel, to get the results back to the host, we copy from the device array pointed to by <code>d_y</code> to the host array pointed to by <code>y</code> by using <code>cudaMemcpy</code> with <code>cudaMemcpyDeviceToHost</code>.</p>
+<pre>cudaMemcpy(y, d_y, N*sizeof(float), cudaMemcpyDeviceToHost);</pre>
+<h3>Launching a Kernel</h3>
+<p>The <code>saxpy</code> kernel is launched by the statement:</p>
+<pre class="prettyprint">saxpy&lt;&lt;&lt;(N+255)&#47;256, 256&gt;&gt;&gt;(N, 2.0, d_x, d_y);</pre>
+<p>The information between the triple chevrons is the <em>execution configuration</em>, which dictates how many device threads execute the kernel in parallel. In CUDA there is a hierarchy of threads in software which mimics how thread processors are grouped on the GPU. In the CUDA programming model we speak of launching a kernel with a <em>grid</em> of <em>thread blocks</em>. The first argument in the execution configuration specifies the number of thread blocks in the grid, and the second specifies the number of threads in a thread block.</p>
+<p>Thread blocks and grids can be made one-, two- or three-dimensional by passing dim3 (a simple struct defined by CUDA with <code>x</code>, <code>y</code>, and <code>z</code> members) values for these arguments, but for this simple example we only need one dimension so we pass integers instead. In this case we launch the kernel with thread blocks containing 256 threads, and use integer arithmetic to determine the number of thread blocks required to process all <code>N</code> elements of the arrays (<code>(N+255)/256</code>).</p>
+<p>For cases where the number of elements in the arrays is not evenly divisible by the thread block size, the kernel code must check for out-of-bounds memory accesses.</p>
+<h3>Cleaning Up</h3>
+<p>After we are finished, we should free any allocated memory. For device memory allocated with <code>cudaMalloc()</code>, simply call <code>cudaFree()</code>. For host memory, use <code>free()</code> as usual.</p>
+<pre class="prettyprint">cudaFree(d_x);
+  cudaFree(d_y);
+  free(x);
+  free(y);</pre>
+<h2>Device Code</h2>
+<p>We now move on to the kernel code.</p>
+<pre class="prettyprint">__global__
+void saxpy(int n, float a, float *x, float *y)
+{
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i &lt; n) y&#91;i&#93; = a*x&#91;i&#93; + y&#91;i&#93;;
+}</pre>
+<p>In CUDA, we define kernels such as <code>saxpy</code> using the <code>__global__</code> declaration specifier. Variables defined within device code do not need to be specified as device variables because they are assumed to reside on the device. In this case the <code>n</code>, <code>a</code> and <code>i</code> variables will be stored by each thread in a register, and the pointers <code>x</code> and <code>y</code> must be pointers to the device memory address space. This is indeed true because we passed <code>d_x</code> and <code>d_y</code> to the kernel when we launched it from the host code. The first two arguments, <code>n</code> and <code>a</code>, however, were not explicitly transferred to the device in host code. Because function arguments are passed by value by default in C/C++, the CUDA runtime can automatically handle the transfer of these values to the device. This feature of the CUDA Runtime API makes launching kernels on the GPU very natural and easy—it is almost the same as calling a C function.</p>
+<p>There are only two lines in our <code>saxpy</code> kernel. As mentioned earlier, the kernel is executed by multiple threads in parallel. If we want each thread to process an element of the resultant array, then we need a means of distinguishing and identifying each thread. CUDA defines the variables <code>blockDim</code>, <code>blockIdx</code>, and <code>threadIdx</code>. These predefined variables are of type <code>dim3</code>, analogous to the execution configuration parameters in host code. The predefined variable <code>blockDim</code> contains the dimensions of each thread block as specified in the second execution configuration parameter for the kernel launch. The predefined variables <code>threadIdx</code> and <code>blockIdx</code> contain the index of the thread within its thread block and the thread block within the grid, respectively. The expression:</p>
+<pre class="prettyprint">    int i = blockDim.x * blockIdx.x + threadIdx.x</pre>
+<p>generates a global index that is used to access elements of the arrays. We didn&#8217;t use it in this example, but there is also <code>gridDim</code> which contains the dimensions of the grid as specified in the first execution configuration parameter to the launch.</p>
+<p>Before this index is used to access array elements, its value is checked against the number of elements, <code>n</code>, to ensure there are no out-of-bounds memory accesses. This check is required for cases where the number of elements in an array is not evenly divisible by the thread block size, and as a result the number of threads launched by the kernel is larger than the array size. The second line of the kernel performs the element-wise work of the SAXPY, and other than the bounds check, it is identical to the inner loop of a host implementation of SAXPY.</p>
+<pre class="prettyprint">if (i &lt; n) y&#91;i&#93; = a*x&#91;i&#93; + y&#91;i&#93;;</pre>
+<h1>Compiling and Running the Code</h1>
+<p>The CUDA C compiler, nvcc, is part of the <a href="http://www.nvidia.com/content/cuda/cuda-toolkit.html">NVIDIA CUDA Toolkit</a>.  To compile our SAXPY example, we save the code in a file with a .cu extension, say <code>saxpy.cu</code>. We can then compile it with nvcc.</p>
+<pre>nvcc -o saxpy saxpy.cu</pre>
+<p>We can then run the code:</p>
+<pre>% ./saxpy
+Max error: 0.000000</pre>
+<h1>Summary and Conclusions</h1>
+<p>With this walkthrough of a simple CUDA C implementation of SAXPY, you now know the basics of programming CUDA C. There are only a few extensions to C required to &#8220;port&#8221; a C code to CUDA C: the <code>__global__</code> declaration specifier for device kernel functions; the execution configuration used when launching a kernel; and the built-in device variables <code>blockDim</code>, <code>blockIdx</code>, and <code>threadIdx</code> used to identify and differentiate GPU threads that execute the kernel in parallel.</p>
+<p>One advantage of the heterogeneous CUDA programming model is that porting an existing code from C to CUDA C can be done incrementally, one kernel at a time.</p>
+<p>In the next post of this series, we will look at some performance measurements and metrics.</p>
+<p><em>Note: this post is based on the post &#8220;<a title="An Easy Introduction to CUDA Fortran" href="https://devblogs.nvidia.com/parallelforall/easy-introduction-cuda-fortran/">An Easy Introduction to CUDA Fortran</a>&#8221; by <a title="Author Archivefor Gregory Ruetsch" href="https://devblogs.nvidia.com/parallelforall/author/gruetsch/">Gregory Reutsch</a>.</em></p>
+<div style="margin-top: 0px; margin-bottom: 0px;" class="sharethis-inline-share-buttons" ></div>
+                    <div class="entry-content-comments-link">
+                        <i class="fa fa-comment" aria-hidden="true"></i>
+                        <a href="https://devblogs.nvidia.com/easy-introduction-cuda-c-and-c/#comments">
+                          <span class="dsq-postid" data-dsqidentifier="316 http://test.markmark.net/?p=316">36 Comments</span>                        </a>
+                    </div>
+
+                    <div class="entry-content-author">
+                        <div class="caption">About the Authors</div>
+                      
+        <div class="media author-info">
+            <div class="author-media-left media-left">
+              <img alt='' src='https://secure.gravatar.com/avatar/0cc5e1ce6bfacc40a08e21f106d5f8b4?s=116&#038;d=retro&#038;r=g' srcset='https://secure.gravatar.com/avatar/0cc5e1ce6bfacc40a08e21f106d5f8b4?s=232&#038;d=retro&#038;r=g 2x' class='avatar img-responsive avatar-116 photo' height='116' width='116' />            </div>
+            <div class="author-media-body media-body">
+                <b>About Mark Harris</b>
+                <br/>
+
+              Mark is a Principal System Software Engineer working on <a href="https://rapids.ai">RAPIDS</a>. Mark has twenty years of experience developing software for GPUs, ranging from graphics and games, to physically-based simulation, to parallel algorithms and high-performance computing. While a Ph.D. student at The University of North Carolina he recognized a nascent trend and coined a name for it: GPGPU (General-Purpose computing on Graphics Processing Units), and started GPGPU.org to provide a forum for those working in the field to share and discuss their work.                                <br/>
+                  <a class="author-twitter-link"
+                     href="https://twitter.com/intent/user?screen_name=harrism">Follow
+                      @harrism                      on Twitter</a>
+                                              <div id="author-link">
+                      <a href="https://devblogs.nvidia.com/author/mharris/"
+                         rel="author">
+                        View all posts by Mark Harris <i class="fa fa-angle-double-right" aria-hidden="true"></i>                      </a>
+                  </div>
+                          </div>
+
+                  </div>
+
+                        </div>
+                </div>
+            </article>
+        
+    </div>
+</div>
+
+<div class="entry-content-share" id="entry-content-share">
+    <div class="container">
+        <div class="row">
+            <div class="entry-content-share-count">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+              <div class="sharethis-inline-share-buttons"></div>            </div>
+        </div>
+    </div>
+</div>
+
+<div class="entry-content-related">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 related-posts-title">Related posts</div>
+        </div>
+
+      <div class="row"><div class="col-md-6 col-sm-6 col-xs-12 col-md-6-pd"><div class="media related-posts-content">
+              <div class="media-body">
+                <div class="wrap-home-posts">
+                  <div class="home-posts-title">
+                    <a href="https://devblogs.nvidia.com/tensorrt-integration-speeds-tensorflow-inference/">TensorRT Integration Speeds Up TensorFlow Inference</a>
+                  </div>
+                  <div class="home-posts-author">By <a href="https://devblogs.nvidia.com/author/skama/" title="Posts by Sami Kama" class="author url fn" rel="author">Sami Kama</a>, <a href="https://devblogs.nvidia.com/author/jbernauer/" title="Posts by Julie Bernauer" class="author url fn" rel="author">Julie Bernauer</a> and <a href="https://devblogs.nvidia.com/author/sisharma/" title="Posts by Siddharth Sharma" class="author url fn" rel="author">Siddharth Sharma</a> | <a href="https://devblogs.nvidia.com/tensorrt-integration-speeds-tensorflow-inference/" title="10:33 am" rel="bookmark"><time class="entry-date" datetime="10:33 am" pubdate>March 27, 2018 </time></a>      </div>
+             </div>
+           </div>
+           <div class="media-right"><a href="https://devblogs.nvidia.com/tensorrt-integration-speeds-tensorflow-inference/" class="image-post-link"><img height="110" width="171" src="https://devblogs.nvidia.com/wp-content/uploads/2018/03/TRT-TF-main-171x110.png" alt="TRT TF main" /></a></div>
+         </div></div><div class="col-md-6 col-sm-6 col-xs-12 col-md-6-pd"><div class="media related-posts-content">
+              <div class="media-body">
+                <div class="wrap-home-posts">
+                  <div class="home-posts-title">
+                    <a href="https://devblogs.nvidia.com/even-easier-introduction-cuda/">An Even Easier Introduction to CUDA</a>
+                  </div>
+                  <div class="home-posts-author">By <a href="https://devblogs.nvidia.com/author/mharris/" title="Posts by Mark Harris" class="author url fn" rel="author">Mark Harris</a> | <a href="https://devblogs.nvidia.com/even-easier-introduction-cuda/" title="4:31 am" rel="bookmark"><time class="entry-date" datetime="4:31 am" pubdate>January 25, 2017 </time></a>      </div>
+             </div>
+           </div>
+           <div class="media-right"><a href="https://devblogs.nvidia.com/even-easier-introduction-cuda/" class="image-post-link"><img height="110" width="111" src="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-111x110.jpg" alt="CUDA_Cube_1K" /></a></div>
+         </div></div></div><div class="row"><div class="col-md-6 col-sm-6 col-xs-12 col-md-6-pd"><div class="media related-posts-content">
+              <div class="media-body">
+                <div class="wrap-home-posts">
+                  <div class="home-posts-title">
+                    <a href="https://devblogs.nvidia.com/how-query-device-properties-and-handle-errors-cuda-cc/">How to Query Device Properties and Handle Errors in CUDA C/C++</a>
+                  </div>
+                  <div class="home-posts-author">By <a href="https://devblogs.nvidia.com/author/mharris/" title="Posts by Mark Harris" class="author url fn" rel="author">Mark Harris</a> | <a href="https://devblogs.nvidia.com/how-query-device-properties-and-handle-errors-cuda-cc/" title="11:01 pm" rel="bookmark"><time class="entry-date" datetime="11:01 pm" pubdate>November 21, 2012 </time></a>      </div>
+             </div>
+           </div>
+           <div class="media-right"><a href="https://devblogs.nvidia.com/how-query-device-properties-and-handle-errors-cuda-cc/" class="image-post-link"><img height="110" width="111" src="https://devblogs.nvidia.com/wp-content/uploads/2012/10/CUDA_Cube_1K-111x110.jpg" alt="CUDA_Cube_1K" /></a></div>
+         </div></div><div class="col-md-6 col-sm-6 col-xs-12 col-md-6-pd"><div class="media related-posts-content">
+              <div class="media-body">
+                <div class="wrap-home-posts">
+                  <div class="home-posts-title">
+                    <a href="https://devblogs.nvidia.com/speed-up-inference-tensorrt/">How to Speed Up Deep Learning Inference Using TensorRT</a>
+                  </div>
+                  <div class="home-posts-author">By <a href="https://devblogs.nvidia.com/author/piotrw/" title="Posts by Piotr Wojciechowski" class="author url fn" rel="author">Piotr Wojciechowski</a>, <a href="https://devblogs.nvidia.com/author/pmukherjee/" title="Posts by Purnendu Mukherjee" class="author url fn" rel="author">Purnendu Mukherjee</a> and <a href="https://devblogs.nvidia.com/author/sisharma/" title="Posts by Siddharth Sharma" class="author url fn" rel="author">Siddharth Sharma</a> | <a href="https://devblogs.nvidia.com/speed-up-inference-tensorrt/" title="7:00 am" rel="bookmark"><time class="entry-date" datetime="7:00 am" pubdate>November 8, 2018 </time></a>      </div>
+             </div>
+           </div>
+           <div class="media-right"><a href="https://devblogs.nvidia.com/speed-up-inference-tensorrt/" class="image-post-link"><img height="110" width="176" src="https://devblogs.nvidia.com/wp-content/uploads/2018/11/NV_TensorRT_Visual_2C_RGB-625x625-1-176x110.png" alt="NV_TensorRT_Visual_2C_RGB-625&#215;625" /></a></div>
+         </div></div></div>    </div>
+</div>
+
+<div class="entry-content-comments" id="entry-content-comments">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 related-posts-comments">Comments</div>
+        </div>
+        <div class="row" id="pf-disqus-thread">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            
+<div id="disqus_thread"></div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+	<!--wp code prettify-->
+	<script type="text/javascript">
+	function $(id) {return !id ? null : document.getElementById(id);}
+
+	loadPrettifyCss = function () {
+		if(!$('prettify_css')) {
+			css = document.createElement('link');
+			css.id = 'prettify_css';
+			css.type = 'text/css';
+			css.rel = 'stylesheet';
+			css.href = 'https://devblogs.nvidia.com/wp-content/plugins/wp-code-prettify/css/prettify.css';
+			var headNode = document.getElementsByTagName("head")[0];
+			headNode.appendChild(css);
+		} else {
+			$('prettify_css').href = 'https://devblogs.nvidia.com/wp-content/plugins/wp-code-prettify/css/prettify.css';
+		}
+
+		if(!$('prettify_custom')) {
+			css = document.createElement('style');
+			css.id = 'prettify_custom';
+			css.type = 'text/css';
+			css.rel = 'stylesheet';
+			css.innerHTML = 'pre.prettyprint { max-height: 500px; white-space: pre; word-wrap: normal; overflow: auto; background-color: #f8f8f8;border-radius: 3px; } pre.prettyprint[title]:before { float: right; border: 1px solid #ccc; border-radius: 3px; background: #ddd; padding: 10px; content: attr(title);  font: 13px "Trebuchet MS", "Helvetica Neue", Helvetica, Arial, sans-serif; }';
+			var headNode = document.getElementsByTagName("head")[0];
+			headNode.appendChild(css);
+		} else {
+			$('prettify_css').innerHTML = 'pre.prettyprint { max-height: 500px; white-space: pre; word-wrap: normal; overflow: auto; background-color: #f8f8f8;border-radius: 3px; } pre.prettyprint[title]:before { float: right; border: 1px solid #ccc; border-radius: 3px; background: #ddd; padding: 10px; content: attr(title);  font: 13px "Trebuchet MS", "Helvetica Neue", Helvetica, Arial, sans-serif; }';
+		}
+	}
+	</script>
+	<script type="text/javascript">
+		loadPrettifyCss();
+	</script>
+
+	<script type="text/javascript" src="https://devblogs.nvidia.com/wp-content/plugins/wp-code-prettify/js/prettify.js"></script>
+	<script type="text/javascript">
+		function wpCodePrettifyOnLoad(func){
+			var wpCodePrettifyOldOnLoad = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func
+			} else {
+				window.onload = function () {
+					wpCodePrettifyOldOnLoad();
+					func()
+				}
+			}
+		}
+
+		wpCodePrettifyOnLoad(function(){prettyPrint();});
+	</script>
+	<!--//wp code prettify-->
+	<script type="text/javascript" src="https://devblogs.nvidia.com/wp-content/plugins/wp-code-prettify/js/lang-matlab.js"></script>
+</div>
+
+</div>
+
+</div>
+<footer class="cuda-footer">
+    <div class="footer-boilerplate">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                    <div class="logo-footer"></div>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                    <div class="boilerplate clearfix">
+                        <div class="copyright">
+                          Copyright © 2019 NVIDIA Corporation                        </div>
+                        <a class="legal-info-link"
+                           href="http://www.nvidia.com/object/legal_info.html">Legal Information</a>
+                        <a class="privacy-link"
+                           href="http://www.nvidia.com/object/privacy_policy.html">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer></div>
+
+<script>_satellite.pageBottom();</script> 	<div id="sidr-left" class="sidebar-container sidr" role="complementary">
+					<div class="sidr-toggle"><a class="sidr-left-link" href="#sidr-left">Close</a></div>
+					<div class="widget-area"><aside id="nav_menu-4" class="widget widget_nav_menu"><h3 class="widget-title">Parallel Forall</h3><div class="menu-main-menu-container"><ul id="menu-main-menu" class="menu"><li id="menu-item-3130" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-3130"><a href="https://devblogs.nvidia.com/category/features/">Features</a></li>
+</ul></div></aside><aside id="search-3" class="widget widget_search"><form role="search" method="get" class="searchform" id="searchform" action="https://devblogs.nvidia.com/">
+  <div><label class="screen-reader-text" for="s">Search for:</label>
+    <input type="text" value="" placeholder="Search..." name="s" id="s" />
+    <span class="fa fa-search visible-xs visible-sm"></span>
+    <input type="submit" id="searchsubmit" value="Search" />
+  </div>
+</form></aside><aside id="text-2" class="widget widget_text"><h3 class="widget-title">Accelerated Computing</h3>			<div class="textwidget"><ul class="nav navbar-nav navbar-margin navbar-right navbar-margin-media login-nav">
+  <li><a href="https://developer.nvidia.com/accelerated-computing">Accelerated Computing</a></li>
+  <li><a href="https://developer.nvidia.com/accelerated-computing-toolkit">Downloads</a></li>
+  <li><a href="https://developer.nvidia.com/accelerated-computing-training">Training</a></li>
+  <li><a href="https://developer.nvidia.com/tools-ecosystem">Ecosystem</a></li>
+<li><a href="https://devtalk.nvidia.com">Forums</a></li>
+    <li class="cuda-program-link">
+        <a href="https://developer.nvidia.com/accelerated-computing-developer"><i class="fa fa-lock fa-fw"></i> Register Now</a>
+    </li>
+    <li>
+        <a href="https://developer.nvidia.com/user">Login</a>
+    </li>
+</ul></div>
+		</aside> 		</div><!-- .widget-area -->
+				</div><!-- #sidr-left -->	<div style="display:none">
+	<div class="grofile-hash-map-0cc5e1ce6bfacc40a08e21f106d5f8b4">
+	</div>
+	</div>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var countVars = {"disqusShortname":"nvparallelforall"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/plugins/disqus-comment-system/public/js/comment_count.js?ver=3.0.16'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var embedVars = {"disqusConfig":{"integration":"wordpress 3.0.16"},"disqusIdentifier":"316 http:\/\/test.markmark.net\/?p=316","disqusShortname":"nvparallelforall","disqusTitle":"An Easy Introduction to CUDA C and C++","disqusUrl":"https:\/\/devblogs.nvidia.com\/easy-introduction-cuda-c-and-c\/","postId":"316"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/plugins/disqus-comment-system/public/js/comment_embed.js?ver=3.0.16'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/plugins/easy-load-more/assets/js/frontend.min.js?ver=1.0.0'></script>
+<script type='text/javascript' src='https://s0.wp.com/wp-content/js/devicepx-jetpack.js?ver=201932'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/plugins/wp-sidr/js/sidr-init.js'></script>
+<script type='text/javascript' src='https://secure.gravatar.com/js/gprofiles.js?ver=2019Augaa'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://c0.wp.com/p/jetpack/7.0/modules/wpgroho.js'></script>
+<script type='text/javascript' src='https://c0.wp.com/c/5.0.3/wp-includes/js/comment-reply.min.js'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/js/custom-script.js?ver=0.2'></script>
+<script type='text/javascript' src='https://devblogs.nvidia.com/wp-content/themes/parallel-forall/assets/js/ios-orientationchange-fix.js?ver=0.2'></script>
+<script type='text/javascript' src='https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js'></script>
+<script type='text/javascript' src='https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js'></script>
+<script type='text/javascript' src='https://c0.wp.com/p/jetpack/7.0/_inc/build/twitter-timeline.min.js'></script>
+<script type='text/javascript' src='https://c0.wp.com/c/5.0.3/wp-includes/js/wp-embed.min.js'></script>
+	<script type="text/javascript">
+		var elm_button_vars = { wrapper: '.all-posts-grid' };
+	</script>
+	<script type='text/javascript' src='https://stats.wp.com/e-201932.js' async='async' defer='defer'></script>
+<script type='text/javascript'>
+	_stq = window._stq || [];
+	_stq.push([ 'view', {v:'ext',j:'1:7.0',blog:'141438771',post:'316',tz:'-7',srv:'devblogs.nvidia.com'} ]);
+	_stq.push([ 'clickTrackerInit', '141438771', '316' ]);
+</script>
+<script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"a63018bcb3","applicationID":"39867691","transactionName":"MgcDbURTD0dSVkcLXwtNIFpCWw5aHEZaDFcJBw==","queueTime":0,"applicationTime":493,"atts":"HkAAGwxJHEk=","errorBeacon":"bam.nr-data.net","agent":""}</script></body>
+</html>
